@@ -13,9 +13,9 @@ import type { BlogAppType } from "@api";
 type Client = ReturnType<typeof hc<BlogAppType>>;
 // END OF MAGIC
 
-const API_URL = "http://localhost:8787";
+const API_URL = "https://api.druid.sh";
 
-class BlogusClient {
+class DruidClient {
   private client: Client;
   siteName: string;
   constructor(private readonly config: BlogConfig) {
@@ -181,4 +181,4 @@ class BlogusClient {
   }
 }
 
-export { BlogusClient };
+export { DruidClient };

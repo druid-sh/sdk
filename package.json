@@ -1,7 +1,7 @@
 {
-  "name": "blogus-sh-sdk",
-  "version": "1.0.0",
-  "description": "Simple Next.js SDK for blog content with SSR support",
+  "name": "@druid-sh/sdk",
+  "version": "1.0.3",
+  "description": "Druid.sh SDK for rendering blog content with SSR support",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -27,5 +27,24 @@
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
     "remark-html": "^16.0.1"
+  },
+  "author": {
+    "name": "Petvi",
+    "email": "dev@druid.sh"
+  },
+  "keywords": [
+    "druid",
+    "druid.sh",
+    "blog",
+    "next",
+    "react",
+    "ssg",
+    "ssr",
+    "nextjs",
+    "reactjs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/druid-sh/sdk.git"
   }
 }

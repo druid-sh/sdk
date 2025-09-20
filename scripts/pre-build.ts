@@ -55,7 +55,7 @@ function replaceLines(): { importReplaced: boolean; clientReplaced: boolean } {
 function revertLines(replacements: {
   importReplaced: boolean;
   clientReplaced: boolean;
-}): void {
+}): boolean {
   try {
     console.log("🔄 Reverting type definitions...");
     let content = readFileSync(CLIENT_FILE_PATH, "utf8");
@@ -84,9 +84,15 @@ function revertLines(replacements: {
     if (reverted) {
       writeFileSync(CLIENT_FILE_PATH, content, "utf8");
       console.log("✅ File reverted successfully");
+    } else {
+      console.log("ℹ️  No changes to revert");
     }
+
+    return true;
   } catch (error) {
     console.error("❌ Error reverting lines:", error);
+    // Don't exit here - we want to report the revert failure but continue
+    return false;
   }
 }
 
@@ -101,44 +107,88 @@ function runBuild(): void {
   }
 }
 
+// Global variable to track replacements for signal handlers
+let globalReplacements = { importReplaced: false, clientReplaced: false };
+
+function cleanup(exitCode = 0): void {
+  console.log("\n🔄 Cleaning up...");
+  const revertSuccess = revertLines(globalReplacements);
+
+  if (!revertSuccess) {
+    console.error(
+      "⚠️  Warning: Failed to revert all changes. Please manually check src/client.ts"
+    );
+    process.exit(1);
+  }
+
+  if (exitCode !== 0) {
+    process.exit(exitCode);
+  }
+}
+
 async function main(): Promise<void> {
   console.log("🚀 Starting prebuild process...\n");
 
-  let replacements = { importReplaced: false, clientReplaced: false };
-
   try {
     // Step 1: Replace the problematic lines
-    replacements = replaceLines();
+    globalReplacements = replaceLines();
 
     // Step 2: Run the build
     runBuild();
 
     console.log("\n🎉 Prebuild process completed successfully!");
+
+    // Step 3: Revert changes on success
+    cleanup(0);
   } catch (error) {
     console.error("\n❌ Prebuild process failed:", error);
-    process.exit(1);
-  } finally {
-    // Step 3: Always revert the changes (whether build succeeded or failed)
-    console.log("\n🔄 Cleaning up...");
-    revertLines(replacements);
+
+    // Step 3: Revert changes on failure
+    cleanup(1);
   }
 }
 
 // Handle process interruption (Ctrl+C)
-process.on("SIGINT", async () => {
+process.on("SIGINT", () => {
   console.log("\n⚠️  Process interrupted. Reverting changes...");
-  // Note: We can't track replacements here, so we'll attempt to revert both
-  const fallbackReplacements = { importReplaced: true, clientReplaced: true };
-  revertLines(fallbackReplacements);
-  process.exit(0);
+  const revertSuccess = revertLines(globalReplacements);
+
+  if (!revertSuccess) {
+    console.error(
+      "⚠️  Warning: Failed to revert changes. Please manually check src/client.ts"
+    );
+  }
+
+  process.exit(130); // Standard exit code for SIGINT
 });
 
-process.on("SIGTERM", async () => {
+process.on("SIGTERM", () => {
   console.log("\n⚠️  Process terminated. Reverting changes...");
-  // Note: We can't track replacements here, so we'll attempt to revert both
-  const fallbackReplacements = { importReplaced: true, clientReplaced: true };
-  revertLines(fallbackReplacements);
-  process.exit(0);
+  const revertSuccess = revertLines(globalReplacements);
+
+  if (!revertSuccess) {
+    console.error(
+      "⚠️  Warning: Failed to revert changes. Please manually check src/client.ts"
+    );
+  }
+
+  process.exit(143); // Standard exit code for SIGTERM
+});
+
+// Handle uncaught exceptions
+process.on("uncaughtException", (error) => {
+  console.error("\n💥 Uncaught Exception:", error);
+  console.log("🔄 Attempting to revert changes...");
+  revertLines(globalReplacements);
+  process.exit(1);
+});
+
+// Handle unhandled promise rejections
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("\n💥 Unhandled Rejection at:", promise, "reason:", reason);
+  console.log("🔄 Attempting to revert changes...");
+  revertLines(globalReplacements);
+  process.exit(1);
 });
 
 if (require.main === module) {

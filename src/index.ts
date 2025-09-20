@@ -1,4 +1,4 @@
-export { BlogusClient } from "./client";
+export { DruidClient } from "./client";
 export { BlogList } from "./components/BlogList";
 export { BlogPost } from "./components/BlogPost";
 export {
