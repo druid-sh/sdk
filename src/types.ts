@@ -1,3 +1,8 @@
+export interface Tag {
+  name: string;
+  slug: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -6,19 +11,18 @@ export interface BlogPost {
   slug: string;
   author: {
     name: string;
-    avatar?: string;
+    avatar: string;
   };
   publishedAt: string;
-  updatedAt?: string;
-  tags: string[];
-  featured?: boolean;
-  coverImage?: string;
+  updatedAt: string;
+  tags: Tag[];
+  coverImage: string;
 }
 
 export interface BlogConfig {
   apiKey: string;
-  blogId: string;
-  baseUrl?: string;
+  basePath: string;
+  siteName: string;
 }
 
 export interface BlogListResponse {
@@ -26,5 +30,12 @@ export interface BlogListResponse {
   total: number;
   page: number;
   limit: number;
-  allTags: string[];
+  allTags: Tag[];
+  basePath: string;
+  currentTag?: string;
+}
+
+export interface BlogPostResponse {
+  post: BlogPost | null;
+  basePath: string;
 }

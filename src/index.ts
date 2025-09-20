@@ -9,4 +9,5 @@ export type {
   BlogPost as BlogPostType,
   BlogConfig,
   BlogListResponse,
+  BlogPostResponse,
 } from "./types";

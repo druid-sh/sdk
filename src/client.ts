@@ -1,12 +1,18 @@
-import { BlogPost, BlogConfig, BlogListResponse } from "./types";
+import {
+  BlogPost,
+  BlogConfig,
+  BlogListResponse,
+  BlogPostResponse,
+  Tag,
+} from "./types";
 
 class BlogusClient {
-  private config: BlogConfig | null = null;
+  constructor(private readonly config: BlogConfig) {
+    this.config = config;
+  }
 
-  constructor(config?: BlogConfig) {
-    if (config) {
-      this.config = config;
-    }
+  get siteName(): string {
+    return this.config.siteName;
   }
 
   // Mock data for now - replace with real API calls later
@@ -18,6 +24,8 @@ class BlogusClient {
         content: `# Getting Started with Next.js 14
 
 Next.js 14 brings exciting new features including improved App Router, better performance, and enhanced developer experience.
+
+![Next.js Logo](https://picsum.photos/600/300)
 
 ## Key Features
 
@@ -31,14 +39,20 @@ Next.js 14 brings exciting new features including improved App Router, better pe
 npx create-next-app@latest my-app
 \`\`\`
 
+![Development Setup](https://picsum.photos/600/200)
+
 Start building amazing web applications today!`,
         excerpt:
           "Learn about the latest features in Next.js 14 and how to get started with the App Router.",
         slug: "getting-started-nextjs-14",
         author: { name: "John Doe", avatar: "https://picsum.photos/40" },
         publishedAt: "2024-01-15T10:00:00Z",
-        tags: ["nextjs", "react", "tutorial"],
-        featured: true,
+        tags: [
+          { name: "Next.js", slug: "nextjs" },
+          { name: "React", slug: "react" },
+          { name: "Tutorial", slug: "tutorial" },
+        ],
+        updatedAt: "2024-01-20T10:00:00Z",
         coverImage: "https://picsum.photos/800/400",
       },
       {
@@ -60,10 +74,15 @@ Essential tools for scaling your React apps effectively.`,
         excerpt:
           "Best practices and patterns for building scalable React applications.",
         slug: "scalable-react-applications",
-        author: { name: "Jane Smith" },
+        author: { name: "Jane Smith", avatar: "https://picsum.photos/40" },
         publishedAt: "2024-01-10T14:30:00Z",
-        tags: ["react", "architecture", "scalability"],
-        featured: false,
+        tags: [
+          { name: "React", slug: "react" },
+          { name: "Architecture", slug: "architecture" },
+          { name: "Scalability", slug: "scalability" },
+        ],
+        updatedAt: "2024-01-15T14:30:00Z",
+        coverImage: "https://picsum.photos/800/400",
       },
       {
         id: "3",
@@ -84,9 +103,15 @@ Learn about conditional types, mapped types, and more.`,
         excerpt:
           "Advanced TypeScript patterns and utility types for better development.",
         slug: "typescript-tips-tricks",
-        author: { name: "Mike Johnson" },
+        author: { name: "Mike Johnson", avatar: "https://picsum.photos/40" },
         publishedAt: "2024-01-05T09:15:00Z",
-        tags: ["typescript", "tips", "advanced"],
+        tags: [
+          { name: "TypeScript", slug: "typescript" },
+          { name: "Tips", slug: "tips" },
+          { name: "Advanced", slug: "advanced" },
+        ],
+        updatedAt: "2024-01-10T09:15:00Z",
+        coverImage: "https://picsum.photos/800/400",
       },
     ];
   }
@@ -106,21 +131,21 @@ Learn about conditional types, mapped types, and more.`,
       page,
       limit,
       allTags,
+      basePath: this.config.basePath,
+      currentTag: undefined,
     };
   }
 
-  async getPost(slug: string): Promise<BlogPost | null> {
+  async getPost(slug: string): Promise<BlogPostResponse> {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const posts = this.getMockPosts();
-    return posts.find((post) => post.slug === slug) || null;
-  }
+    const post = posts.find((post) => post.slug === slug) || null;
 
-  async getFeatured(): Promise<BlogPost[]> {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    const posts = this.getMockPosts();
-    return posts.filter((post) => post.featured);
+    return {
+      post,
+      basePath: this.config.basePath,
+    };
   }
 
   async getPostsByTag(
@@ -131,7 +156,9 @@ Learn about conditional types, mapped types, and more.`,
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const allPosts = this.getMockPosts();
-    const taggedPosts = allPosts.filter((post) => post.tags.includes(tag));
+    const taggedPosts = allPosts.filter((post) =>
+      post.tags.some((t) => t.slug === tag)
+    );
     const startIndex = (page - 1) * limit;
     const posts = taggedPosts.slice(startIndex, startIndex + limit);
     const allTags = this.getAllTags();
@@ -142,23 +169,23 @@ Learn about conditional types, mapped types, and more.`,
       page,
       limit,
       allTags,
+      basePath: this.config.basePath,
+      currentTag: tag,
     };
   }
 
-  async getTags(): Promise<string[]> {
+  async getTags(): Promise<Tag[]> {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    const posts = this.getMockPosts();
-    const allTags = posts.flatMap((post) => post.tags);
-    const uniqueTags = Array.from(new Set(allTags));
-
-    return uniqueTags;
+    return this.getAllTags();
   }
 
-  private getAllTags(): string[] {
+  private getAllTags(): Tag[] {
     const posts = this.getMockPosts();
     const allTags = posts.flatMap((post) => post.tags);
-    const uniqueTags = Array.from(new Set(allTags));
+    const uniqueTags = Array.from(
+      new Map(allTags.map((tag) => [tag.slug, tag])).values()
+    );
     return uniqueTags;
   }
 }

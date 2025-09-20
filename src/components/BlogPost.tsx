@@ -1,42 +1,21 @@
 import React from "react";
-import { BlogPost } from "../types";
-import { processMarkdownContent } from "../utils/blog";
+import Link from "next/link";
+import { BlogPostResponse } from "../types";
+import { processMarkdownContent } from "../utils/remark";
 
 interface BlogPostProps {
-  post: BlogPost;
-  showFullContent?: boolean;
+  postData: BlogPostResponse;
 }
 
-interface BlogPostContentProps {
-  post: BlogPost;
-  showFullContent?: boolean;
-  processedContent?: string;
-}
+export async function BlogPost({ postData }: BlogPostProps) {
+  const { post, basePath } = postData;
 
-export async function BlogPost({
-  post,
-  showFullContent = true,
-}: BlogPostProps) {
-  let processedContent: string | undefined;
-
-  if (showFullContent) {
-    processedContent = await processMarkdownContent(post.content);
+  if (!post) {
+    return <div>Post not found</div>;
   }
 
-  return (
-    <BlogPostContent
-      post={post}
-      showFullContent={showFullContent}
-      processedContent={processedContent}
-    />
-  );
-}
+  const processedContent = await processMarkdownContent(post.content);
 
-function BlogPostContent({
-  post,
-  showFullContent = true,
-  processedContent,
-}: BlogPostContentProps) {
   const formattedDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -50,27 +29,37 @@ function BlogPostContent({
         maxWidth: "800px",
         margin: "0 auto",
         padding: "2rem",
+        position: "relative",
       }}
     >
-      {post.coverImage && (
-        <img
-          src={post.coverImage}
-          alt={post.title}
-          className="blog-post-cover"
-          style={{
-            width: "100%",
-            height: "400px",
-            objectFit: "cover",
-            borderRadius: "8px",
-            marginBottom: "2rem",
-          }}
-        />
-      )}
+      <Link
+        href={basePath}
+        style={{
+          position: "absolute",
+          top: "1rem",
+          left: "1rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          textDecoration: "none",
+          color: "#333",
+          fontSize: "1rem",
+          fontWeight: "500",
+          background: "#fff",
+          padding: "0.5rem 1rem",
+          borderRadius: "8px",
+          border: "1px solid #e0e0e0",
+          transition: "background 0.2s ease",
+        }}
+      >
+        ← Back to Blog
+      </Link>
 
       <header
         className="blog-post-header"
         style={{
           marginBottom: "2rem",
+          marginTop: "3rem",
         }}
       >
         <h1
@@ -102,17 +91,15 @@ function BlogPostContent({
               gap: "0.5rem",
             }}
           >
-            {post.author.avatar && (
-              <img
-                src={post.author.avatar}
-                alt={post.author.name}
-                style={{
-                  width: "32px",
-                  height: "32px",
-                  borderRadius: "50%",
-                }}
-              />
-            )}
+            <img
+              src={post.author.avatar}
+              alt={post.author.name}
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "50%",
+              }}
+            />
             <span>{post.author.name}</span>
           </div>
           <time dateTime={post.publishedAt}>{formattedDate}</time>
@@ -126,22 +113,37 @@ function BlogPostContent({
           }}
         >
           {post.tags.map((tag) => (
-            <span
-              key={tag}
-              className="blog-post-tag"
+            <Link
+              key={tag.slug}
+              href={`${basePath}/tag/${tag.slug}`}
               style={{
                 background: "#f0f0f0",
                 padding: "0.25rem 0.5rem",
                 borderRadius: "4px",
                 fontSize: "0.875rem",
                 color: "#666",
+                textDecoration: "none",
+                transition: "background 0.2s ease",
               }}
             >
-              #{tag}
-            </span>
+              #{tag.name}
+            </Link>
           ))}
         </div>
       </header>
+
+      <img
+        src={post.coverImage}
+        alt={post.title}
+        className="blog-post-cover"
+        style={{
+          width: "100%",
+          height: "400px",
+          objectFit: "cover",
+          borderRadius: "8px",
+          marginBottom: "2rem",
+        }}
+      />
 
       <div
         className="blog-post-content"
@@ -150,15 +152,11 @@ function BlogPostContent({
           color: "#333",
         }}
       >
-        {showFullContent && processedContent ? (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: processedContent,
-            }}
-          />
-        ) : (
-          <p>{post.excerpt}</p>
-        )}
+        <div
+          dangerouslySetInnerHTML={{
+            __html: processedContent,
+          }}
+        />
       </div>
 
       <style jsx>{`
@@ -207,6 +205,13 @@ function BlogPostContent({
 
         .blog-post-content a:hover {
           text-decoration: underline;
+        }
+
+        .blog-post-content img {
+          border-radius: 8px;
+          max-width: 100%;
+          height: auto;
+          margin: 1rem 0;
         }
       `}</style>
     </article>

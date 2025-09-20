@@ -4,29 +4,19 @@ import { BlogPost as BlogPostType, BlogListResponse } from "../types";
 
 interface BlogListProps {
   blogData: BlogListResponse;
-  basePath?: string;
-  baseUrl?: string;
-  currentTag?: string;
 }
 
-export function BlogList({
-  blogData,
-  basePath = "/blog",
-  baseUrl,
-  currentTag,
-}: BlogListProps) {
-  const { posts, page, total, limit, allTags } = blogData;
+export function BlogList({ blogData }: BlogListProps) {
+  const { posts, page, total, limit, allTags, basePath, currentTag } = blogData;
   const totalPages = Math.ceil(total / limit);
 
   // Use allTags if provided, otherwise extract unique tags from current posts
   const tagsToDisplay =
     allTags ||
     Array.from(
-      new Set(
-        posts
-          .map((post: BlogPostType) => post.tags)
-          .reduce((acc, tags) => acc.concat(tags), [])
-      )
+      new Map(
+        posts.flatMap((post) => post.tags).map((tag) => [tag.slug, tag])
+      ).values()
     );
 
   return (
@@ -69,12 +59,12 @@ export function BlogList({
         >
           All
         </Link>
-        {tagsToDisplay.map((tag: string) => {
-          const isActive = currentTag === tag;
+        {tagsToDisplay.map((tag) => {
+          const isActive = currentTag === tag.slug;
           return (
             <Link
-              key={tag}
-              href={`${basePath}/tag/${tag}`}
+              key={tag.slug}
+              href={`${basePath}/tag/${tag.slug}`}
               style={{
                 background: isActive ? "#007bff" : "#e0e0e0",
                 color: isActive ? "#fff" : "#333",
@@ -86,7 +76,7 @@ export function BlogList({
                 fontWeight: isActive ? "bold" : "normal",
               }}
             >
-              #{tag}
+              #{tag.name}
             </Link>
           );
         })}
@@ -162,7 +152,25 @@ export function BlogList({
                 color: "#888",
               }}
             >
-              <span className="blog-list-author">{post.author.name}</span>
+              <div
+                className="blog-list-author"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <img
+                  src={post.author.avatar}
+                  alt={post.author.name}
+                  style={{
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "50%",
+                  }}
+                />
+                <span>{post.author.name}</span>
+              </div>
               <span className="blog-list-date">
                 {new Date(post.publishedAt).toLocaleDateString()}
               </span>
@@ -177,19 +185,21 @@ export function BlogList({
               }}
             >
               {post.tags.slice(0, 3).map((tag) => (
-                <span
-                  key={tag}
-                  className="blog-list-tag"
+                <Link
+                  key={tag.slug}
+                  href={`${basePath}/tag/${tag.slug}`}
                   style={{
                     background: "#f0f0f0",
                     padding: "0.25rem 0.5rem",
                     borderRadius: "4px",
                     fontSize: "0.75rem",
                     color: "#666",
+                    textDecoration: "none",
+                    transition: "background 0.2s ease",
                   }}
                 >
-                  #{tag}
-                </span>
+                  #{tag.name}
+                </Link>
               ))}
             </div>
           </div>
@@ -210,7 +220,7 @@ export function BlogList({
       >
         {page > 1 && (
           <Link
-            href={`${baseUrl || basePath}?page=${page - 1}`}
+            href={`${basePath}?page=${page - 1}`}
             className="blog-pagination-link"
             style={{
               padding: "0.75rem 1.5rem",
@@ -242,7 +252,7 @@ export function BlogList({
 
         {page < totalPages && (
           <Link
-            href={`${baseUrl || basePath}?page=${page + 1}`}
+            href={`${basePath}?page=${page + 1}`}
             className="blog-pagination-link"
             style={{
               padding: "0.75rem 1.5rem",
