@@ -33,11 +33,11 @@ Start building amazing web applications today!`,
         excerpt:
           "Learn about the latest features in Next.js 14 and how to get started with the App Router.",
         slug: "getting-started-nextjs-14",
-        author: { name: "John Doe", avatar: "https://picsum.photos.com/40" },
+        author: { name: "John Doe", avatar: "https://picsum.photos/40" },
         publishedAt: "2024-01-15T10:00:00Z",
         tags: ["nextjs", "react", "tutorial"],
         featured: true,
-        coverImage: "https://picsum.photos.com/800/400",
+        coverImage: "https://picsum.photos/800/400",
       },
       {
         id: "2",
@@ -117,6 +117,42 @@ Learn about conditional types, mapped types, and more.`,
 
     const posts = this.getMockPosts();
     return posts.filter((post) => post.featured);
+  }
+
+  async getBlogPostsByTag(tag: string): Promise<BlogPost[]> {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    const posts = this.getMockPosts();
+    return posts.filter((post) => post.tags.includes(tag));
+  }
+
+  async getBlogPostsByTagPaginated(
+    tag: string,
+    page = 1,
+    limit = 10
+  ): Promise<BlogListResponse> {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    const allTaggedPosts = await this.getBlogPostsByTag(tag);
+    const startIndex = (page - 1) * limit;
+    const posts = allTaggedPosts.slice(startIndex, startIndex + limit);
+
+    return {
+      posts,
+      total: allTaggedPosts.length,
+      page,
+      limit,
+    };
+  }
+
+  async getAllTags(): Promise<string[]> {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    const posts = this.getMockPosts();
+    const allTags = posts.flatMap((post) => post.tags);
+    const uniqueTags = Array.from(new Set(allTags));
+
+    return uniqueTags;
   }
 }
 

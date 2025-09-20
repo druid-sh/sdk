@@ -1,5 +1,7 @@
-import type { BlogPost } from "../types";
+import type { BlogPost, BlogListResponse } from "../types";
 import { mockBlogPosts } from "../data";
+import { remark } from "remark";
+import remarkHtml from "remark-html";
 
 // Utility functions for blog data (server-side compatible)
 
@@ -23,6 +25,28 @@ export async function getBlogPostsByTag(tag: string): Promise<BlogPost[]> {
   return posts.filter((post) => post.tags.includes(tag));
 }
 
+export async function getBlogPostsByTagPaginated(
+  tag: string,
+  page: number = 1,
+  limit: number = 10
+): Promise<BlogListResponse> {
+  // Get all posts with the specified tag
+  const allTaggedPosts = await getBlogPostsByTag(tag);
+
+  // Calculate pagination
+  const total = allTaggedPosts.length;
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  const posts = allTaggedPosts.slice(startIndex, endIndex);
+
+  return {
+    posts,
+    total,
+    page,
+    limit,
+  };
+}
+
 export async function getAllTags(): Promise<string[]> {
   // Get all unique tags from blog posts
   const posts = await getAllBlogPosts();
@@ -31,4 +55,14 @@ export async function getAllTags(): Promise<string[]> {
     post.tags.forEach((tag) => tagsSet.add(tag));
   });
   return Array.from(tagsSet);
+}
+
+export async function processMarkdownContent(
+  markdown: string
+): Promise<string> {
+  // Process markdown content to HTML
+  const processedContent = await remark()
+    .use(remarkHtml, { sanitize: true })
+    .process(markdown);
+  return processedContent.toString();
 }

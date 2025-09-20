@@ -2,52 +2,29 @@ import React from "react";
 import Link from "next/link";
 import { BlogPost as BlogPostType, BlogListResponse } from "../types";
 
-interface BlogListWithPaginationProps {
+interface BlogListProps {
   blogData: BlogListResponse;
   basePath?: string;
   baseUrl?: string;
 }
 
-export function BlogListWithPagination({
+export function BlogList({
   blogData,
   basePath = "/blog",
   baseUrl,
-}: BlogListWithPaginationProps) {
+}: BlogListProps) {
   const { posts, page, total, limit } = blogData;
   const totalPages = Math.ceil(total / limit);
 
-  return (
-    <BlogList
-      posts={posts}
-      basePath={basePath}
-      pagination={
-        totalPages > 1
-          ? {
-              currentPage: page,
-              totalPages,
-              baseUrl,
-            }
-          : undefined
-      }
-    />
+  // Extract unique tags from all posts
+  const uniqueTags = Array.from(
+    new Set(
+      posts
+        .map((post: BlogPostType) => post.tags)
+        .reduce((acc, tags) => acc.concat(tags), [])
+    )
   );
-}
 
-interface BlogListProps {
-  posts: BlogPostType[];
-  basePath?: string;
-  pagination?: {
-    currentPage: number;
-    totalPages: number;
-    baseUrl?: string;
-  };
-}
-
-export function BlogList({
-  posts,
-  basePath = "/blog",
-  pagination,
-}: BlogListProps) {
   return (
     <div
       className="blog-list"
@@ -59,6 +36,44 @@ export function BlogList({
         padding: "2rem",
       }}
     >
+      {/* Tags Section */}
+      {uniqueTags.length > 0 && (
+        <div
+          className="blog-tags"
+          style={{
+            display: "flex",
+            gap: "0.5rem",
+            flexWrap: "wrap",
+            marginBottom: "2rem",
+            padding: "1rem",
+            background: "#f8f9fa",
+            borderRadius: "8px",
+          }}
+        >
+          <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
+            Filter by tag:
+          </span>
+          {uniqueTags.map((tag) => (
+            <Link
+              key={tag}
+              href={`${basePath}/tag/${tag}`}
+              style={{
+                background: "#e0e0e0",
+                padding: "0.25rem 0.5rem",
+                borderRadius: "4px",
+                textDecoration: "none",
+                color: "#333",
+                fontSize: "0.875rem",
+                transition: "background 0.2s ease",
+              }}
+            >
+              #{tag}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {/* Posts List */}
       {posts.map((post) => (
         <article
           key={post.id}
@@ -162,75 +177,69 @@ export function BlogList({
         </article>
       ))}
 
-      {/* Pagination */}
-      {pagination && pagination.totalPages > 1 && (
-        <div
-          className="blog-pagination"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "2rem",
-            marginTop: "3rem",
-            padding: "2rem",
-          }}
-        >
-          {pagination.currentPage > 1 && (
-            <Link
-              href={`${pagination.baseUrl || basePath}?page=${
-                pagination.currentPage - 1
-              }`}
-              className="blog-pagination-link"
-              style={{
-                padding: "0.75rem 1.5rem",
-                background: "#fff",
-                border: "2px solid #e0e0e0",
-                borderRadius: "8px",
-                textDecoration: "none",
-                color: "#333",
-                fontWeight: "500",
-                transition: "all 0.2s ease",
-              }}
-            >
-              ← Previous
-            </Link>
-          )}
-
-          <div
-            className="blog-pagination-info"
+      {/* Always Visible Pagination */}
+      <div
+        className="blog-pagination"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "2rem",
+          marginTop: "3rem",
+          padding: "2rem",
+        }}
+      >
+        {page > 1 && (
+          <Link
+            href={`${baseUrl || basePath}?page=${page - 1}`}
+            className="blog-pagination-link"
             style={{
-              padding: "0.75rem 1rem",
-              background: "#f8f9fa",
+              padding: "0.75rem 1.5rem",
+              background: "#fff",
+              border: "2px solid #e0e0e0",
               borderRadius: "8px",
-              color: "#666",
+              textDecoration: "none",
+              color: "#333",
               fontWeight: "500",
+              transition: "all 0.2s ease",
             }}
           >
-            Page {pagination.currentPage} of {pagination.totalPages}
-          </div>
+            ← Previous
+          </Link>
+        )}
 
-          {pagination.currentPage < pagination.totalPages && (
-            <Link
-              href={`${pagination.baseUrl || basePath}?page=${
-                pagination.currentPage + 1
-              }`}
-              className="blog-pagination-link"
-              style={{
-                padding: "0.75rem 1.5rem",
-                background: "#fff",
-                border: "2px solid #e0e0e0",
-                borderRadius: "8px",
-                textDecoration: "none",
-                color: "#333",
-                fontWeight: "500",
-                transition: "all 0.2s ease",
-              }}
-            >
-              Next →
-            </Link>
-          )}
+        <div
+          className="blog-pagination-info"
+          style={{
+            padding: "0.75rem 1rem",
+            background: "#f8f9fa",
+            borderRadius: "8px",
+            color: "#666",
+            fontWeight: "500",
+          }}
+        >
+          Page {page} of {totalPages}
         </div>
-      )}
+
+        {page < totalPages && (
+          <Link
+            href={`${baseUrl || basePath}?page=${page + 1}`}
+            className="blog-pagination-link"
+            style={{
+              padding: "0.75rem 1.5rem",
+              background: "#fff",
+              border: "2px solid #e0e0e0",
+              borderRadius: "8px",
+              textDecoration: "none",
+              color: "#333",
+              fontWeight: "500",
+              transition: "all 0.2s ease",
+            }}
+          >
+            Next →
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

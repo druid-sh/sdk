@@ -1,12 +1,42 @@
 import React from "react";
 import { BlogPost } from "../types";
+import { processMarkdownContent } from "../utils/blog";
 
 interface BlogPostProps {
   post: BlogPost;
   showFullContent?: boolean;
 }
 
-export function BlogPost({ post, showFullContent = false }: BlogPostProps) {
+interface BlogPostContentProps {
+  post: BlogPost;
+  showFullContent?: boolean;
+  processedContent?: string;
+}
+
+export async function BlogPost({
+  post,
+  showFullContent = false,
+}: BlogPostProps) {
+  let processedContent: string | undefined;
+
+  if (showFullContent) {
+    processedContent = await processMarkdownContent(post.content);
+  }
+
+  return (
+    <BlogPostContent
+      post={post}
+      showFullContent={showFullContent}
+      processedContent={processedContent}
+    />
+  );
+}
+
+function BlogPostContent({
+  post,
+  showFullContent = false,
+  processedContent,
+}: BlogPostContentProps) {
   const formattedDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -120,10 +150,10 @@ export function BlogPost({ post, showFullContent = false }: BlogPostProps) {
           color: "#333",
         }}
       >
-        {showFullContent ? (
+        {showFullContent && processedContent ? (
           <div
             dangerouslySetInnerHTML={{
-              __html: post.content.replace(/\n/g, "<br>"),
+              __html: processedContent,
             }}
           />
         ) : (
@@ -144,6 +174,39 @@ export function BlogPost({ post, showFullContent = false }: BlogPostProps) {
           padding: 1rem;
           border-radius: 4px;
           overflow-x: auto;
+        }
+
+        .blog-post-content code {
+          background: #f0f0f0;
+          padding: 0.125rem 0.25rem;
+          border-radius: 3px;
+          font-family: "Monaco", "Consolas", monospace;
+        }
+
+        .blog-post-content blockquote {
+          border-left: 4px solid #e0e0e0;
+          padding-left: 1rem;
+          margin: 1rem 0;
+          color: #666;
+          font-style: italic;
+        }
+
+        .blog-post-content ul,
+        .blog-post-content ol {
+          padding-left: 2rem;
+        }
+
+        .blog-post-content li {
+          margin-bottom: 0.5rem;
+        }
+
+        .blog-post-content a {
+          color: #0066cc;
+          text-decoration: none;
+        }
+
+        .blog-post-content a:hover {
+          text-decoration: underline;
         }
       `}</style>
     </article>

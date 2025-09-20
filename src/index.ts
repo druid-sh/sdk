@@ -1,5 +1,5 @@
 export { createBlogClient, getBlogClient } from "./client";
-export { BlogList, BlogListWithPagination } from "./components/BlogList";
+export { BlogList } from "./components/BlogList";
 export { BlogPost } from "./components/BlogPost";
 export {
   generateBlogPostMetadata,
