@@ -1,5 +1,5 @@
-import type { BlogPost, Category } from "../types";
-import { mockBlogPosts, mockCategories } from "../data";
+import type { BlogPost } from "../types";
+import { mockBlogPosts } from "../data";
 
 // Utility functions for blog data (server-side compatible)
 
@@ -16,17 +16,19 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
   return posts.find((post) => post.slug === slug) || null;
 }
 
-export async function getAllCategories(): Promise<Category[]> {
-  // In a real app, this would fetch from a database or CMS
-  // For now, return mock categories
-  return mockCategories;
-}
-
-export async function getBlogPostsByCategory(
-  categorySlug: string
-): Promise<BlogPost[]> {
+export async function getBlogPostsByTag(tag: string): Promise<BlogPost[]> {
   // In a real app, this would filter from a database or CMS
   // For now, filter mock data
   const posts = await getAllBlogPosts();
-  return posts.filter((post) => post.category === categorySlug);
+  return posts.filter((post) => post.tags.includes(tag));
+}
+
+export async function getAllTags(): Promise<string[]> {
+  // Get all unique tags from blog posts
+  const posts = await getAllBlogPosts();
+  const tagsSet = new Set<string>();
+  posts.forEach((post) => {
+    post.tags.forEach((tag) => tagsSet.add(tag));
+  });
+  return Array.from(tagsSet);
 }

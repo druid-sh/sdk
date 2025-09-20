@@ -48,22 +48,6 @@ export function BlogList({
   basePath = "/blog",
   pagination,
 }: BlogListProps) {
-  const [hoveredItems, setHoveredItems] = React.useState<Set<string>>(
-    new Set()
-  );
-
-  const handleMouseEnter = (postId: string) => {
-    setHoveredItems((prev) => new Set(prev).add(postId));
-  };
-
-  const handleMouseLeave = (postId: string) => {
-    setHoveredItems((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(postId);
-      return newSet;
-    });
-  };
-
   return (
     <div
       className="blog-list"
@@ -86,13 +70,7 @@ export function BlogList({
             padding: "1.5rem",
             border: "1px solid #e0e0e0",
             borderRadius: "8px",
-            transition: "box-shadow 0.2s",
-            boxShadow: hoveredItems.has(post.id)
-              ? "0 4px 12px rgba(0, 0, 0, 0.1)"
-              : "none",
           }}
-          onMouseEnter={() => handleMouseEnter(post.id)}
-          onMouseLeave={() => handleMouseLeave(post.id)}
         >
           {post.coverImage && (
             <Link href={`${basePath}/${post.slug}`}>
