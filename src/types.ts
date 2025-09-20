@@ -14,6 +14,7 @@ export interface BlogPost {
   content: string;
   slug: string;
   author: Author;
+  excerpt: string;
   publishedAt: string;
   updatedAt: string;
   tags: Tag[];
