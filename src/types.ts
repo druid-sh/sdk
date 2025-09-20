@@ -3,16 +3,18 @@ export interface Tag {
   slug: string;
 }
 
+export interface Author {
+  name: string;
+  avatar?: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
   content: string;
   excerpt: string;
   slug: string;
-  author: {
-    name: string;
-    avatar: string;
-  };
+  author: Author;
   publishedAt: string;
   updatedAt: string;
   tags: Tag[];

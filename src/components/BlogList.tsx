@@ -175,15 +175,17 @@ export function BlogList({ blogData }: BlogListProps) {
                     gap: "0.5rem",
                   }}
                 >
-                  <img
-                    src={post.author.avatar}
-                    alt={post.author.name}
-                    style={{
-                      width: "24px",
-                      height: "24px",
-                      borderRadius: "50%",
-                    }}
-                  />
+                  {post.author.avatar && (
+                    <img
+                      src={post.author.avatar}
+                      alt={post.author.name}
+                      style={{
+                        width: "24px",
+                        height: "24px",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  )}
                   <span>{post.author.name}</span>
                 </div>
                 <span className="blog-list-date">

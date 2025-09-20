@@ -91,15 +91,17 @@ export async function BlogPost({ postData }: BlogPostProps) {
               gap: "0.5rem",
             }}
           >
-            <img
-              src={post.author.avatar}
-              alt={post.author.name}
-              style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "50%",
-              }}
-            />
+            {post.author.avatar && (
+              <img
+                src={post.author.avatar}
+                alt={post.author.name}
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                }}
+              />
+            )}
             <span>{post.author.name}</span>
           </div>
           <time dateTime={post.publishedAt}>{formattedDate}</time>

@@ -4,6 +4,7 @@ import {
   BlogListResponse,
   BlogPostResponse,
   Tag,
+  Author,
 } from "./types";
 
 class BlogusClient {
@@ -103,7 +104,7 @@ Learn about conditional types, mapped types, and more.`,
         excerpt:
           "Advanced TypeScript patterns and utility types for better development.",
         slug: "typescript-tips-tricks",
-        author: { name: "Mike Johnson", avatar: "https://picsum.photos/40" },
+        author: { name: "Mike Johnson" },
         publishedAt: "2024-01-05T09:15:00Z",
         tags: [
           { name: "TypeScript", slug: "typescript" },
