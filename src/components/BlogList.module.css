@@ -1,0 +1,73 @@
+.blogList {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.blogName {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.categoryFilter {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.categoryButton {
+  padding: 0.5rem 1rem;
+  border: 2px solid #3498db;
+  background-color: transparent;
+  color: #3498db;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.categoryButton:hover {
+  background-color: #3498db;
+  color: white;
+}
+
+.categoryButton.active {
+  background-color: #3498db;
+  color: white;
+}
+
+/* Posts layout */
+.posts {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.firstPost {
+  width: 100%;
+}
+
+.gridPosts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.noPosts {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.1rem;
+}
