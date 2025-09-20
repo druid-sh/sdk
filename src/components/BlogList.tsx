@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { BlogPost as BlogPostType, BlogListResponse } from "../types";
+import { generateExcerpt } from "../utils/metadata";
 
 interface BlogListProps {
   blogData: BlogListResponse;
@@ -154,7 +155,7 @@ export function BlogList({ blogData }: BlogListProps) {
                   marginBottom: "1rem",
                 }}
               >
-                {post.excerpt}
+                {generateExcerpt(post.content)}
               </p>
 
               <div

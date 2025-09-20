@@ -8,10 +8,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "prepublishOnly": "npm run build"
+    "build": "npx ts-node scripts/pre-build.ts",
+    "build:only": "tsc"
   },
   "devDependencies": {
+    "@types/node": "^24.3.3",
     "@types/react": "^19.1.11",
     "next": "^15.5.0",
     "react": "^19.1.1",
@@ -22,6 +23,7 @@
     "react": "^19.1.1"
   },
   "dependencies": {
+    "hono": "^4.9.6",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1"
   }

@@ -12,7 +12,6 @@ export interface BlogPost {
   id: string;
   title: string;
   content: string;
-  excerpt: string;
   slug: string;
   author: Author;
   publishedAt: string;
@@ -25,6 +24,7 @@ export interface BlogConfig {
   apiKey: string;
   basePath: string;
   siteName: string;
+  projectId: string;
 }
 
 export interface BlogListResponse {
