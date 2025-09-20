@@ -1,3 +1,0 @@
-/* Main styles file - imports all component CSS */
-@import "./components/BlogList.module.css";
-@import "./components/BlogPost.module.css";

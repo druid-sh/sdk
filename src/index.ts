@@ -1,15 +1,12 @@
-// Styles
-import "./styles.css";
-
-// Blog components
-export { BlogProvider } from "./components/BlogProvider";
-export { useBlog } from "./hooks/useBlog";
-export { default as BlogList } from "./components/BlogList";
+export { createBlogClient, getBlogClient } from "./client";
+export { BlogList, BlogListWithPagination } from "./components/BlogList";
 export { BlogPost } from "./components/BlogPost";
-export { BlogPostCard } from "./components/BlogPostCard";
-
-// Types
-export type { BlogPost as BlogPostType, Category } from "./types";
-
-// Data (for development/testing)
-export { mockBlogPosts, mockCategories } from "./data";
+export {
+  generateBlogPostMetadata,
+  generateBlogListMetadata,
+} from "./utils/metadata";
+export type {
+  BlogPost as BlogPostType,
+  BlogConfig,
+  BlogListResponse,
+} from "./types";

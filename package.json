@@ -1,49 +1,24 @@
 {
-  "name": "blogus-component-library",
-  "private": false,
-  "version": "0.1.0",
-  "type": "module",
-  "main": "./dist/blogus-component-library.umd.js",
-  "module": "./dist/blogus-component-library.es.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/blogus-component-library.es.js",
-      "require": "./dist/blogus-component-library.umd.js"
-    },
-    "./styles": {
-      "import": "./dist/blogus-component-library.css",
-      "require": "./dist/blogus-component-library.css"
-    }
-  },
+  "name": "blogus-sh-sdk",
+  "version": "1.0.0",
+  "description": "Simple Next.js SDK for blog content with SSR support",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && npx tsc --project tsconfig.app.json --outDir dist --declaration --emitDeclarationOnly",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@eslint/js": "^9.33.0",
-    "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react": "^5.0.0",
-    "eslint": "^9.33.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.3.0",
+    "@types/react": "^19.1.11",
+    "next": "^15.5.0",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "^8.39.1",
-    "vite": "^7.1.2",
-    "vite-plugin-dts": "^4.5.4"
+    "typescript": "^5.9.2"
+  },
+  "peerDependencies": {
+    "next": "^15.5.0",
+    "react": "^19.1.1"
   }
 }
