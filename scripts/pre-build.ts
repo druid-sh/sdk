@@ -7,11 +7,12 @@ import { resolve } from "path";
 const CLIENT_FILE_PATH = resolve("src/client.ts");
 
 // Original lines to replace
-const ORIGINAL_IMPORT_LINE = 'import type { AppType } from "@api";';
-const ORIGINAL_CLIENT_LINE = "type Client = ReturnType<typeof hc<AppType>>;";
+const ORIGINAL_IMPORT_LINE = 'import type { BlogAppType } from "@api";';
+const ORIGINAL_CLIENT_LINE =
+  "type Client = ReturnType<typeof hc<BlogAppType>>;";
 
 // Replacement lines
-const REPLACEMENT_IMPORT_LINE = "type AppType = any;";
+const REPLACEMENT_IMPORT_LINE = "type BlogAppType = any;";
 const REPLACEMENT_CLIENT_LINE = "type Client = any;";
 
 function replaceLines(): { importReplaced: boolean; clientReplaced: boolean } {

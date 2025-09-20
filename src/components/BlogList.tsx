@@ -1,15 +1,14 @@
 import React from "react";
 import Link from "next/link";
 import { BlogPost as BlogPostType, BlogListResponse } from "../types";
-import { generateExcerpt } from "../utils/metadata";
 
 interface BlogListProps {
   blogData: BlogListResponse;
 }
 
 export function BlogList({ blogData }: BlogListProps) {
-  const { posts, page, total, limit, allTags, basePath, currentTag } = blogData;
-  const totalPages = Math.ceil(total / limit);
+  const { posts, allTags, basePath, currentTag } = blogData;
+  const { page, limit, total } = blogData.pagination;
 
   // Use allTags if provided, otherwise extract unique tags from current posts
   const tagsToDisplay =
@@ -155,7 +154,7 @@ export function BlogList({ blogData }: BlogListProps) {
                   marginBottom: "1rem",
                 }}
               >
-                {generateExcerpt(post.content)}
+                {post.excerpt}
               </p>
 
               <div
@@ -270,10 +269,10 @@ export function BlogList({ blogData }: BlogListProps) {
             fontWeight: "500",
           }}
         >
-          Page {page} of {totalPages}
+          Page {page} of {total}
         </div>
 
-        {page < totalPages && (
+        {page < total && (
           <Link
             href={
               currentTag

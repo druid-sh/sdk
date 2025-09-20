@@ -162,11 +162,58 @@ export async function BlogPost({ postData }: BlogPostProps) {
       </div>
 
       <style jsx>{`
-        .blog-post-content h1,
-        .blog-post-content h2,
-        .blog-post-content h3 {
+        .blog-post-content h1 {
+          font-size: 2.25rem;
+          font-weight: 700;
+          margin-top: 2.5rem;
+          margin-bottom: 1.5rem;
+          color: #1a1a1a;
+          line-height: 1.2;
+        }
+
+        .blog-post-content h2 {
+          font-size: 1.875rem;
+          font-weight: 600;
           margin-top: 2rem;
           margin-bottom: 1rem;
+          color: #1a1a1a;
+          line-height: 1.3;
+        }
+
+        .blog-post-content h3 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+          color: #1a1a1a;
+          line-height: 1.4;
+        }
+
+        .blog-post-content h4 {
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+          color: #333;
+          line-height: 1.4;
+        }
+
+        .blog-post-content h5 {
+          font-size: 1.125rem;
+          font-weight: 600;
+          margin-top: 1rem;
+          margin-bottom: 0.5rem;
+          color: #333;
+          line-height: 1.4;
+        }
+
+        .blog-post-content h6 {
+          font-size: 1rem;
+          font-weight: 600;
+          margin-top: 1rem;
+          margin-bottom: 0.5rem;
+          color: #666;
+          line-height: 1.4;
         }
 
         .blog-post-content pre {

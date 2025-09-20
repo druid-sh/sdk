@@ -30,9 +30,11 @@ export interface BlogConfig {
 
 export interface BlogListResponse {
   posts: BlogPost[];
-  total: number;
-  page: number;
-  limit: number;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+  };
   allTags: Tag[];
   basePath: string;
   currentTag?: string;
