@@ -1,10 +1,12 @@
 import { BlogPost, BlogConfig, BlogListResponse } from "./types";
 
-class BlogClient {
-  private config: BlogConfig;
+class BlogusClient {
+  private config: BlogConfig | null = null;
 
-  constructor(config: BlogConfig) {
-    this.config = config;
+  constructor(config?: BlogConfig) {
+    if (config) {
+      this.config = config;
+    }
   }
 
   // Mock data for now - replace with real API calls later
@@ -96,56 +98,54 @@ Learn about conditional types, mapped types, and more.`,
     const allPosts = this.getMockPosts();
     const startIndex = (page - 1) * limit;
     const posts = allPosts.slice(startIndex, startIndex + limit);
+    const allTags = this.getAllTags();
 
     return {
       posts,
       total: allPosts.length,
       page,
       limit,
+      allTags,
     };
   }
 
-  async getPostBySlug(slug: string): Promise<BlogPost | null> {
+  async getPost(slug: string): Promise<BlogPost | null> {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const posts = this.getMockPosts();
     return posts.find((post) => post.slug === slug) || null;
   }
 
-  async getFeaturedPosts(): Promise<BlogPost[]> {
+  async getFeatured(): Promise<BlogPost[]> {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const posts = this.getMockPosts();
     return posts.filter((post) => post.featured);
   }
 
-  async getBlogPostsByTag(tag: string): Promise<BlogPost[]> {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    const posts = this.getMockPosts();
-    return posts.filter((post) => post.tags.includes(tag));
-  }
-
-  async getBlogPostsByTagPaginated(
+  async getPostsByTag(
     tag: string,
     page = 1,
     limit = 10
   ): Promise<BlogListResponse> {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    const allTaggedPosts = await this.getBlogPostsByTag(tag);
+    const allPosts = this.getMockPosts();
+    const taggedPosts = allPosts.filter((post) => post.tags.includes(tag));
     const startIndex = (page - 1) * limit;
-    const posts = allTaggedPosts.slice(startIndex, startIndex + limit);
+    const posts = taggedPosts.slice(startIndex, startIndex + limit);
+    const allTags = this.getAllTags();
 
     return {
       posts,
-      total: allTaggedPosts.length,
+      total: taggedPosts.length,
       page,
       limit,
+      allTags,
     };
   }
 
-  async getAllTags(): Promise<string[]> {
+  async getTags(): Promise<string[]> {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const posts = this.getMockPosts();
@@ -154,20 +154,13 @@ Learn about conditional types, mapped types, and more.`,
 
     return uniqueTags;
   }
-}
 
-let clientInstance: BlogClient | null = null;
-
-export function createBlogClient(config: BlogConfig): BlogClient {
-  clientInstance = new BlogClient(config);
-  return clientInstance;
-}
-
-export function getBlogClient(): BlogClient {
-  if (!clientInstance) {
-    throw new Error(
-      "Blog client not initialized. Call createBlogClient() first."
-    );
+  private getAllTags(): string[] {
+    const posts = this.getMockPosts();
+    const allTags = posts.flatMap((post) => post.tags);
+    const uniqueTags = Array.from(new Set(allTags));
+    return uniqueTags;
   }
-  return clientInstance;
 }
+
+export { BlogusClient };

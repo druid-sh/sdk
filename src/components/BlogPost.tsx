@@ -15,7 +15,7 @@ interface BlogPostContentProps {
 
 export async function BlogPost({
   post,
-  showFullContent = false,
+  showFullContent = true,
 }: BlogPostProps) {
   let processedContent: string | undefined;
 
@@ -34,7 +34,7 @@ export async function BlogPost({
 
 function BlogPostContent({
   post,
-  showFullContent = false,
+  showFullContent = true,
   processedContent,
 }: BlogPostContentProps) {
   const formattedDate = new Date(post.publishedAt).toLocaleDateString("en-US", {

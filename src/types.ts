@@ -26,4 +26,5 @@ export interface BlogListResponse {
   total: number;
   page: number;
   limit: number;
+  allTags: string[];
 }

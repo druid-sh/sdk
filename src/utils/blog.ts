@@ -39,11 +39,15 @@ export async function getBlogPostsByTagPaginated(
   const endIndex = startIndex + limit;
   const posts = allTaggedPosts.slice(startIndex, endIndex);
 
+  // Get all available tags
+  const allTags = await getAllTags();
+
   return {
     posts,
     total,
     page,
     limit,
+    allTags,
   };
 }
 

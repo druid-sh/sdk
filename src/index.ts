@@ -1,4 +1,4 @@
-export { createBlogClient, getBlogClient } from "./client";
+export { BlogusClient } from "./client";
 export { BlogList } from "./components/BlogList";
 export { BlogPost } from "./components/BlogPost";
 export {

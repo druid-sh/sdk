@@ -6,24 +6,28 @@ interface BlogListProps {
   blogData: BlogListResponse;
   basePath?: string;
   baseUrl?: string;
+  currentTag?: string;
 }
 
 export function BlogList({
   blogData,
   basePath = "/blog",
   baseUrl,
+  currentTag,
 }: BlogListProps) {
-  const { posts, page, total, limit } = blogData;
+  const { posts, page, total, limit, allTags } = blogData;
   const totalPages = Math.ceil(total / limit);
 
-  // Extract unique tags from all posts
-  const uniqueTags = Array.from(
-    new Set(
-      posts
-        .map((post: BlogPostType) => post.tags)
-        .reduce((acc, tags) => acc.concat(tags), [])
-    )
-  );
+  // Use allTags if provided, otherwise extract unique tags from current posts
+  const tagsToDisplay =
+    allTags ||
+    Array.from(
+      new Set(
+        posts
+          .map((post: BlogPostType) => post.tags)
+          .reduce((acc, tags) => acc.concat(tags), [])
+      )
+    );
 
   return (
     <div
@@ -36,42 +40,57 @@ export function BlogList({
         padding: "2rem",
       }}
     >
-      {/* Tags Section */}
-      {uniqueTags.length > 0 && (
-        <div
-          className="blog-tags"
+      {/* Tags Section - Always Visible */}
+      <div
+        className="blog-tags"
+        style={{
+          display: "flex",
+          gap: "0.5rem",
+          flexWrap: "wrap",
+          marginBottom: "2rem",
+          padding: "1rem",
+          background: "#f8f9fa",
+          borderRadius: "8px",
+        }}
+      >
+        <span style={{ fontWeight: "bold", marginRight: "1rem" }}>Tags</span>
+        <Link
+          href={`${basePath}`}
           style={{
-            display: "flex",
-            gap: "0.5rem",
-            flexWrap: "wrap",
-            marginBottom: "2rem",
-            padding: "1rem",
-            background: "#f8f9fa",
-            borderRadius: "8px",
+            background: !currentTag ? "#007bff" : "#e0e0e0",
+            color: !currentTag ? "#fff" : "#333",
+            padding: "0.25rem 0.5rem",
+            borderRadius: "4px",
+            textDecoration: "none",
+            fontSize: "0.875rem",
+            transition: "background 0.2s ease",
+            fontWeight: !currentTag ? "bold" : "normal",
           }}
         >
-          <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
-            Filter by tag:
-          </span>
-          {uniqueTags.map((tag) => (
+          All
+        </Link>
+        {tagsToDisplay.map((tag: string) => {
+          const isActive = currentTag === tag;
+          return (
             <Link
               key={tag}
               href={`${basePath}/tag/${tag}`}
               style={{
-                background: "#e0e0e0",
+                background: isActive ? "#007bff" : "#e0e0e0",
+                color: isActive ? "#fff" : "#333",
                 padding: "0.25rem 0.5rem",
                 borderRadius: "4px",
                 textDecoration: "none",
-                color: "#333",
                 fontSize: "0.875rem",
                 transition: "background 0.2s ease",
+                fontWeight: isActive ? "bold" : "normal",
               }}
             >
               #{tag}
             </Link>
-          ))}
-        </div>
-      )}
+          );
+        })}
+      </div>
 
       {/* Posts List */}
       {posts.map((post) => (
