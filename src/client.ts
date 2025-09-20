@@ -12,10 +12,6 @@ class BlogusClient {
     this.config = config;
   }
 
-  get siteName(): string {
-    return this.config.siteName;
-  }
-
   // Mock data for now - replace with real API calls later
   private getMockPosts(): BlogPost[] {
     return [
