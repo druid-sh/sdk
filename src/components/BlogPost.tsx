@@ -1,4 +1,4 @@
-import { useBlog } from "./BlogProvider";
+import { useBlog } from "../hooks/useBlog";
 import styles from "./BlogPost.module.css";
 
 interface BlogPostProps {
@@ -36,6 +36,9 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
   return (
     <article className={styles.blogPost}>
       <header className={styles.header}>
+        {post.image && (
+          <img src={post.image} alt={post.title} className={styles.image} />
+        )}
         <h1 className={styles.title}>{post.title}</h1>
 
         {/* Post metadata */}

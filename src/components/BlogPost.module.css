@@ -3,7 +3,6 @@
   margin: 0 auto;
   padding: 2rem;
   background-color: #fff;
-  min-height: 100vh;
 }
 
 .header {
@@ -46,6 +45,14 @@
 
 .readingTime {
   color: #666;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  object-fit: cover;
 }
 
 .content {

@@ -1,9 +1,9 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 import type { ReactNode } from "react";
 import { mockBlogPosts, mockCategories } from "../data";
 import type { BlogPost, Category } from "../types";
 
-interface BlogContextType {
+export interface BlogContextType {
   posts: BlogPost[];
   categories: Category[];
   selectedCategory: string | null;
@@ -12,9 +12,22 @@ interface BlogContextType {
   getPostBySlug: (slug: string) => BlogPost | undefined;
 }
 
-const BlogContext = createContext<BlogContextType | undefined>(undefined);
+export const BlogContext = createContext<BlogContextType | undefined>(
+  undefined
+);
 
-export const BlogProvider = ({ children }: { children: ReactNode }) => {
+export const BlogProvider = ({
+  children,
+  apiKey,
+}: {
+  children: ReactNode;
+  apiKey: string;
+}) => {
+  // Validate API key
+  if (!apiKey || apiKey.trim() === "") {
+    throw new Error("BlogProvider requires a valid API key to be provided");
+  }
+
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const filteredPosts = selectedCategory
@@ -39,12 +52,4 @@ export const BlogProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </BlogContext.Provider>
   );
-};
-
-export const useBlog = () => {
-  const context = useContext(BlogContext);
-  if (!context) {
-    throw new Error("useBlog must be used within a BlogProvider");
-  }
-  return context;
 };

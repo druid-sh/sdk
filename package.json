@@ -11,6 +11,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/blogus-component-library.es.js",
       "require": "./dist/blogus-component-library.umd.js"
+    },
+    "./styles": {
+      "import": "./dist/blogus-component-library.css",
+      "require": "./dist/blogus-component-library.css"
     }
   },
   "files": [

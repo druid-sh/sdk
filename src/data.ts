@@ -9,6 +9,7 @@ export const mockBlogPosts: BlogPost[] = [
       "TypeScript is a powerful superset of JavaScript that adds static typing to the language. In this post, we'll explore the basics of TypeScript and how it can improve your development experience.",
     publishedAt: "2024-01-15T10:00:00Z",
     category: "technology",
+    image: "https://picsum.photos/300/200?random=1",
   },
   {
     id: "2",
@@ -18,6 +19,7 @@ export const mockBlogPosts: BlogPost[] = [
       "React Hooks have revolutionized how we write React components. This comprehensive guide covers all the essential hooks and best practices for using them effectively in your applications.",
     publishedAt: "2024-01-22T14:30:00Z",
     category: "frontend",
+    image: "https://picsum.photos/300/200?random=2",
   },
   {
     id: "3",
@@ -27,6 +29,7 @@ export const mockBlogPosts: BlogPost[] = [
       "Learn the patterns and practices for building scalable Node.js applications that can handle high traffic and maintain performance under load.",
     publishedAt: "2024-02-01T09:15:00Z",
     category: "backend",
+    image: "https://picsum.photos/300/200?random=3",
   },
   {
     id: "4",
@@ -36,6 +39,7 @@ export const mockBlogPosts: BlogPost[] = [
       "Understanding the differences between CSS Grid and Flexbox is crucial for modern web development. This post explores their strengths and use cases.",
     publishedAt: "2024-02-08T16:45:00Z",
     category: "frontend",
+    image: "https://picsum.photos/300/200?random=4",
   },
   {
     id: "5",
@@ -45,6 +49,7 @@ export const mockBlogPosts: BlogPost[] = [
       "Machine learning can seem intimidating, but this post breaks down the fundamental concepts and gets you started with your first ML project.",
     publishedAt: "2024-02-15T11:20:00Z",
     category: "ai",
+    image: "https://picsum.photos/300/200?random=5",
   },
   {
     id: "6",
@@ -54,6 +59,7 @@ export const mockBlogPosts: BlogPost[] = [
       "Docker has become essential for modern development workflows. Learn how to containerize your applications and streamline your deployment process.",
     publishedAt: "2024-02-22T13:10:00Z",
     category: "devops",
+    image: "https://picsum.photos/300/200?random=6",
   },
   {
     id: "7",
@@ -63,6 +69,7 @@ export const mockBlogPosts: BlogPost[] = [
       "Creating websites that work perfectly on all devices requires understanding responsive design principles. This guide covers everything you need to know.",
     publishedAt: "2024-03-01T15:30:00Z",
     category: "design",
+    image: "https://picsum.photos/300/200?random=7",
   },
   {
     id: "8",
@@ -72,6 +79,7 @@ export const mockBlogPosts: BlogPost[] = [
       "GraphQL offers a more efficient and flexible approach to API development compared to REST. Learn how to build GraphQL APIs that your clients will love.",
     publishedAt: "2024-03-08T10:45:00Z",
     category: "backend",
+    image: "https://picsum.photos/300/200?random=8",
   },
   {
     id: "9",
@@ -81,6 +89,7 @@ export const mockBlogPosts: BlogPost[] = [
       "Testing is crucial for maintaining code quality. This post explores different testing strategies and tools available for JavaScript applications.",
     publishedAt: "2024-03-15T12:00:00Z",
     category: "testing",
+    image: "https://picsum.photos/300/200?random=9",
   },
   {
     id: "10",
@@ -90,6 +99,7 @@ export const mockBlogPosts: BlogPost[] = [
       "Performance matters for user experience and SEO. Discover techniques and best practices for optimizing your web applications' performance.",
     publishedAt: "2024-03-22T14:20:00Z",
     category: "performance",
+    image: "https://picsum.photos/300/200?random=10",
   },
   {
     id: "11",
@@ -99,6 +109,7 @@ export const mockBlogPosts: BlogPost[] = [
       "Python has become the go-to language for data analysis. Learn how to use pandas, numpy, and other libraries to analyze and visualize data effectively.",
     publishedAt: "2024-03-29T09:30:00Z",
     category: "data",
+    image: "https://picsum.photos/300/200?random=11",
   },
   {
     id: "12",
@@ -108,6 +119,7 @@ export const mockBlogPosts: BlogPost[] = [
       "Vue.js offers powerful patterns for building reusable components. This guide explores the most effective patterns for Vue.js development.",
     publishedAt: "2024-04-05T16:15:00Z",
     category: "frontend",
+    image: "https://picsum.photos/300/200?random=12",
   },
   {
     id: "13",
@@ -117,6 +129,7 @@ export const mockBlogPosts: BlogPost[] = [
       "Good database design is fundamental to application performance and maintainability. Learn the principles that will help you design better databases.",
     publishedAt: "2024-04-12T11:40:00Z",
     category: "database",
+    image: "https://picsum.photos/300/200?random=13",
   },
   {
     id: "14",
@@ -126,6 +139,7 @@ export const mockBlogPosts: BlogPost[] = [
       "The mobile development landscape is constantly evolving. Stay ahead of the curve with this overview of the latest trends and technologies.",
     publishedAt: "2024-04-19T13:25:00Z",
     category: "mobile",
+    image: "https://picsum.photos/300/200?random=14",
   },
   {
     id: "15",
@@ -135,6 +149,7 @@ export const mockBlogPosts: BlogPost[] = [
       "Security should be a top priority for every web application. Learn essential security practices to protect your applications and users.",
     publishedAt: "2024-04-26T10:10:00Z",
     category: "security",
+    image: "https://picsum.photos/300/200?random=15",
   },
 ];
 

@@ -20,17 +20,17 @@ const calculateReadingTime = (content: string): number => {
 
 interface BlogPostCardProps {
   post: BlogPostType;
-  isFirst?: boolean;
 }
 
-export const BlogPostCard = ({ post, isFirst = false }: BlogPostCardProps) => {
+export const BlogPostCard = ({ post }: BlogPostCardProps) => {
   const readingTime = calculateReadingTime(post.content);
   const formattedDate = formatDate(post.publishedAt);
 
   return (
-    <article
-      className={`${styles.blogPost} ${isFirst ? styles.firstPost : ""}`}
-    >
+    <article className={styles.blogPost}>
+      {post.image && (
+        <img src={post.image} alt={post.title} className={styles.image} />
+      )}
       <h3 className={styles.title}>{post.title}</h3>
 
       {/* Post metadata */}

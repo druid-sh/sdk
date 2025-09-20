@@ -1,5 +1,9 @@
+// Styles
+import "./styles.css";
+
 // Blog components
-export { BlogProvider, useBlog } from "./components/BlogProvider";
+export { BlogProvider } from "./components/BlogProvider";
+export { useBlog } from "./hooks/useBlog";
 export { default as BlogList } from "./components/BlogList";
 export { BlogPost } from "./components/BlogPost";
 export { BlogPostCard } from "./components/BlogPostCard";

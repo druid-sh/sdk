@@ -5,6 +5,7 @@ export interface BlogPost {
   content: string;
   publishedAt: string;
   category: string;
+  image?: string;
 }
 
 export interface Category {

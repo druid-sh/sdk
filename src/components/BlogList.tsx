@@ -1,4 +1,4 @@
-import { useBlog } from "./BlogProvider";
+import { useBlog } from "../hooks/useBlog";
 import { BlogPostCard } from "./BlogPostCard";
 import styles from "./BlogList.module.css";
 
@@ -40,14 +40,14 @@ const BlogList = () => {
           <>
             {/* First post - full width */}
             <div className={styles.firstPost}>
-              <BlogPostCard post={filteredPosts[0]} isFirst={true} />
+              <BlogPostCard post={filteredPosts[0]} />
             </div>
 
             {/* Remaining posts - 3 column grid */}
             {filteredPosts.length > 1 && (
               <div className={styles.gridPosts}>
                 {filteredPosts.slice(1).map((post) => (
-                  <BlogPostCard key={post.id} post={post} isFirst={false} />
+                  <BlogPostCard key={post.id} post={post} />
                 ))}
               </div>
             )}
