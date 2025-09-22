@@ -1,6 +1,6 @@
 {
   "name": "@druid-sh/sdk",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Druid.sh SDK for rendering blog content with SSR support",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
