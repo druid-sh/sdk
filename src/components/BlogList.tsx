@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image"; // Import the Next.js Image component
 import React from "react";
 import { BlogListResponse } from "../types";
 
@@ -20,281 +21,312 @@ export function BlogList({ data }: BlogListProps) {
     );
 
   return (
-    <div
-      className="blog-list"
-      style={{
-        display: "grid",
-        gap: "2rem",
-        maxWidth: "1200px",
-        margin: "0 auto",
-        padding: "2rem",
-      }}
-    >
-      {/* Tags Section - Always Visible */}
-      <div
-        className="blog-tags"
-        style={{
-          display: "flex",
-          gap: "0.5rem",
-          flexWrap: "wrap",
-          marginBottom: "2rem",
-          padding: "1rem",
-          background: "#f8f9fa",
-          borderRadius: "8px",
-        }}
-      >
-        <span style={{ fontWeight: "bold", marginRight: "1rem" }}>Tags</span>
-        <Link
-          href={`${basePath}`}
-          style={{
-            background: !currentTag ? "#007bff" : "#e0e0e0",
-            color: !currentTag ? "#fff" : "#333",
-            padding: "0.25rem 0.5rem",
-            borderRadius: "4px",
-            textDecoration: "none",
-            fontSize: "0.875rem",
-            transition: "background 0.2s ease",
-            fontWeight: !currentTag ? "bold" : "normal",
-          }}
-        >
-          All
-        </Link>
-        {tagsToDisplay.map((tag) => {
-          const isActive = currentTag === tag.slug;
-          return (
-            <Link
-              key={tag.slug}
-              href={`${basePath}/tag/${tag.slug}`}
-              style={{
-                background: isActive ? "#007bff" : "#e0e0e0",
-                color: isActive ? "#fff" : "#333",
-                padding: "0.25rem 0.5rem",
-                borderRadius: "4px",
-                textDecoration: "none",
-                fontSize: "0.875rem",
-                transition: "background 0.2s ease",
-                fontWeight: isActive ? "bold" : "normal",
-              }}
-            >
-              #{tag.name}
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Posts List */}
-      {posts.length === 0 ? (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "3rem 2rem",
-            color: "#666",
-            fontSize: "1.125rem",
-            background: "#f8f9fa",
-            borderRadius: "8px",
-            marginBottom: "2rem",
-          }}
-        >
-          No posts found.
-        </div>
-      ) : (
-        posts.map((post) => (
-          <article
-            key={post.id}
-            className="blog-list-item"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "300px 1fr",
-              gap: "1.5rem",
-              padding: "1.5rem",
-              border: "1px solid #e0e0e0",
-              borderRadius: "8px",
-            }}
+    <>
+      <div className="blog-list">
+        {/* Tags Section */}
+        <div className="blog-tags">
+          <span>Tags</span>
+          <Link
+            href={`${basePath}`}
+            className={`tag-link ${!currentTag ? "active" : ""}`}
           >
-            {post.coverImage && (
-              <Link href={`${basePath}/${post.slug}`}>
-                <img
-                  src={post.coverImage}
-                  alt={post.title}
-                  className="blog-list-image"
-                  style={{
-                    width: "100%",
-                    height: "200px",
-                    objectFit: "cover",
-                    borderRadius: "6px",
-                  }}
-                />
+            All
+          </Link>
+          {tagsToDisplay.map((tag) => {
+            const isActive = currentTag === tag.slug;
+            return (
+              <Link
+                key={tag.slug}
+                href={`${basePath}/tag/${tag.slug}`}
+                className={`tag-link ${isActive ? "active" : ""}`}
+              >
+                #{tag.name}
               </Link>
-            )}
+            );
+          })}
+        </div>
 
-            <div className="blog-list-content">
-              <h2
-                className="blog-list-title"
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: "bold",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                <Link
-                  href={`${basePath}/${post.slug}`}
-                  style={{
-                    color: "#1a1a1a",
-                    textDecoration: "none",
-                  }}
-                >
-                  {post.title}
-                </Link>
-              </h2>
-              <p
-                className="blog-list-excerpt"
-                style={{
-                  color: "#666",
-                  lineHeight: "1.6",
-                  marginBottom: "1rem",
-                }}
-              >
-                {post.excerpt}
-              </p>
-
-              <div
-                className="blog-list-meta"
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  marginBottom: "0.5rem",
-                  fontSize: "0.875rem",
-                  color: "#888",
-                }}
-              >
-                <div
-                  className="blog-list-author"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
-                >
-                  {post.author.avatar && (
-                    <img
-                      src={post.author.avatar}
-                      alt={post.author.name}
+        {/* Posts List */}
+        {posts.length === 0 ? (
+          <div className="no-posts-found">No posts found.</div>
+        ) : (
+          posts.map((post) => (
+            <article key={post.id} className="blog-list-item">
+              {post.coverImage && (
+                <div className="blog-list-image-wrapper">
+                  <Link href={`${basePath}/${post.slug}`}>
+                    <Image
+                      src={post.coverImage}
+                      alt={post.title}
+                      width={600} // Base width for 2:1 ratio
+                      height={300} // Base height for 2:1 ratio
+                      sizes="(max-width: 768px) 100vw, 300px"
                       style={{
-                        width: "24px",
-                        height: "24px",
-                        borderRadius: "50%",
+                        width: "100%",
+                        height: "auto",
+                        objectFit: "cover",
+                        borderRadius: "6px",
                       }}
                     />
-                  )}
-                  <span>{post.author.name}</span>
-                </div>
-                <span className="blog-list-date">
-                  {new Date(post.publishedAt).toLocaleDateString()}
-                </span>
-              </div>
-
-              <div
-                className="blog-list-tags"
-                style={{
-                  display: "flex",
-                  gap: "0.5rem",
-                  flexWrap: "wrap",
-                }}
-              >
-                {post.tags.slice(0, 3).map((tag) => (
-                  <Link
-                    key={tag.slug}
-                    href={`${basePath}/tag/${tag.slug}`}
-                    style={{
-                      background: "#f0f0f0",
-                      padding: "0.25rem 0.5rem",
-                      borderRadius: "4px",
-                      fontSize: "0.75rem",
-                      color: "#666",
-                      textDecoration: "none",
-                      transition: "background 0.2s ease",
-                    }}
-                  >
-                    #{tag.name}
                   </Link>
-                ))}
+                </div>
+              )}
+
+              <div className="blog-list-content">
+                <h2 className="blog-list-title">
+                  <Link href={`${basePath}/${post.slug}`}>{post.title}</Link>
+                </h2>
+                <p className="blog-list-excerpt">{post.excerpt}</p>
+
+                <div className="blog-list-meta">
+                  <div className="blog-list-author">
+                    {post.author.avatar && (
+                      <Image
+                        src={post.author.avatar}
+                        alt={post.author.name}
+                        width={24}
+                        height={24}
+                        style={{ borderRadius: "50%" }}
+                      />
+                    )}
+                    <span>{post.author.name}</span>
+                  </div>
+                  <span className="blog-list-date">
+                    {new Date(post.publishedAt).toLocaleDateString()}
+                  </span>
+                </div>
+
+                <div className="blog-list-post-tags">
+                  {post.tags.slice(0, 3).map((tag) => (
+                    <Link key={tag.slug} href={`${basePath}/tag/${tag.slug}`}>
+                      #{tag.name}
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
-          </article>
-        ))
-      )}
-
-      {/* Always Visible Pagination */}
-      <div
-        className="blog-pagination"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "2rem",
-          marginTop: "3rem",
-          padding: "2rem",
-        }}
-      >
-        {page > 1 && (
-          <Link
-            href={
-              currentTag
-                ? `${basePath}/tag/${currentTag}?page=${page - 1}`
-                : `${basePath}?page=${page - 1}`
-            }
-            className="blog-pagination-link"
-            style={{
-              padding: "0.75rem 1.5rem",
-              background: "#fff",
-              border: "2px solid #e0e0e0",
-              borderRadius: "8px",
-              textDecoration: "none",
-              color: "#333",
-              fontWeight: "500",
-              transition: "all 0.2s ease",
-            }}
-          >
-            ← Previous
-          </Link>
+            </article>
+          ))
         )}
 
-        <div
-          className="blog-pagination-info"
-          style={{
-            padding: "0.75rem 1rem",
-            background: "#f8f9fa",
-            borderRadius: "8px",
-            color: "#666",
-            fontWeight: "500",
-          }}
-        >
-          Page {page} of {total}
+        {/* Pagination */}
+        <div className="blog-pagination">
+          {page > 1 && (
+            <Link
+              href={
+                currentTag
+                  ? `${basePath}/tag/${currentTag}?page=${page - 1}`
+                  : `${basePath}?page=${page - 1}`
+              }
+              className="blog-pagination-link"
+            >
+              ← Previous
+            </Link>
+          )}
+
+          <div className="blog-pagination-info">
+            Page {page} of {total}
+          </div>
+
+          {page < total && (
+            <Link
+              href={
+                currentTag
+                  ? `${basePath}/tag/${currentTag}?page=${page + 1}`
+                  : `${basePath}?page=${page + 1}`
+              }
+              className="blog-pagination-link"
+            >
+              Next →
+            </Link>
+          )}
         </div>
-
-        {page < total && (
-          <Link
-            href={
-              currentTag
-                ? `${basePath}/tag/${currentTag}?page=${page + 1}`
-                : `${basePath}?page=${page + 1}`
-            }
-            className="blog-pagination-link"
-            style={{
-              padding: "0.75rem 1.5rem",
-              background: "#fff",
-              border: "2px solid #e0e0e0",
-              borderRadius: "8px",
-              textDecoration: "none",
-              color: "#333",
-              fontWeight: "500",
-              transition: "all 0.2s ease",
-            }}
-          >
-            Next →
-          </Link>
-        )}
       </div>
-    </div>
+
+      {/* Scoped CSS using styled-jsx */}
+      <style jsx>{`
+        .blog-list {
+          display: grid;
+          gap: 2rem;
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 2rem;
+        }
+
+        .blog-tags {
+          display: flex;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+          margin-bottom: 2rem;
+          padding: 1rem;
+          background: #f8f9fa;
+          border-radius: 8px;
+          align-items: center;
+        }
+
+        .blog-tags > span {
+          font-weight: bold;
+          margin-right: 1rem;
+        }
+
+        .tag-link {
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          text-decoration: none;
+          font-size: 0.875rem;
+          transition: background 0.2s ease, color 0.2s ease;
+          background: #e0e0e0;
+          color: #333;
+        }
+
+        .tag-link.active {
+          background: #007bff;
+          color: #fff;
+          font-weight: bold;
+        }
+
+        .no-posts-found {
+          text-align: center;
+          padding: 3rem 2rem;
+          color: #666;
+          font-size: 1.125rem;
+          background: #f8f9fa;
+          border-radius: 8px;
+        }
+
+        .blog-list-item {
+          display: grid;
+          grid-template-columns: 300px 1fr; /* Default for desktop */
+          gap: 1.5rem;
+          padding: 1.5rem;
+          border: 1px solid #e0e0e0;
+          border-radius: 8px;
+          transition: box-shadow 0.2s ease;
+        }
+        .blog-list-item:hover {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .blog-list-image-wrapper {
+          overflow: hidden;
+          border-radius: 6px;
+        }
+        /* Style child Image component on parent link hover */
+        .blog-list-image-wrapper :global(img) {
+          transition: transform 0.3s ease-in-out;
+        }
+        .blog-list-image-wrapper a:hover :global(img) {
+          transform: scale(1.05);
+        }
+
+        .blog-list-content {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .blog-list-title {
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin: 0 0 0.5rem 0;
+        }
+        .blog-list-title a {
+          color: #1a1a1a;
+          text-decoration: none;
+          transition: color 0.2s ease;
+        }
+        .blog-list-title a:hover {
+          color: #007bff;
+        }
+
+        .blog-list-excerpt {
+          color: #666;
+          line-height: 1.6;
+          margin-bottom: 1rem;
+          flex-grow: 1; /* Pushes meta/tags to the bottom */
+        }
+
+        .blog-list-meta {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 0.5rem;
+          font-size: 0.875rem;
+          color: #888;
+          align-items: center;
+        }
+
+        .blog-list-author {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .blog-list-post-tags {
+          display: flex;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+        }
+        .blog-list-post-tags a {
+          background: #f0f0f0;
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          font-size: 0.75rem;
+          color: #666;
+          text-decoration: none;
+          transition: background 0.2s ease;
+        }
+        .blog-list-post-tags a:hover {
+          background: #e0e0e0;
+        }
+
+        .blog-pagination {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 2rem;
+          margin-top: 2rem;
+          padding: 1rem;
+        }
+
+        .blog-pagination-link {
+          padding: 0.75rem 1.5rem;
+          background: #fff;
+          border: 2px solid #e0e0e0;
+          border-radius: 8px;
+          text-decoration: none;
+          color: #333;
+          font-weight: 500;
+          transition: all 0.2s ease;
+        }
+        .blog-pagination-link:hover {
+          border-color: #007bff;
+          background: #007bff;
+          color: #fff;
+        }
+
+        .blog-pagination-info {
+          padding: 0.75rem 1rem;
+          background: #f8f9fa;
+          border-radius: 8px;
+          color: #666;
+          font-weight: 500;
+        }
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+          .blog-list {
+            padding: 1rem;
+            gap: 1.5rem;
+          }
+          .blog-list-item {
+            /* Stack image on top of content */
+            grid-template-columns: 1fr;
+            padding: 1rem;
+          }
+          .blog-pagination {
+            flex-direction: column;
+            gap: 1rem;
+          }
+        }
+      `}</style>
+    </>
   );
 }
