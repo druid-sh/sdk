@@ -2,13 +2,14 @@ import React from "react";
 import Link from "next/link";
 import { BlogPostResponse } from "../types";
 import { processMarkdownContent } from "../utils/remark";
+import Image from "next/image";
 
 interface BlogPostProps {
-  postData: BlogPostResponse;
+  data: BlogPostResponse;
 }
 
-export async function BlogPost({ postData }: BlogPostProps) {
-  const { post, basePath } = postData;
+export async function BlogPost({ data }: BlogPostProps) {
+  const { post, basePath } = data;
 
   if (!post) {
     return <div>Post not found</div>;
@@ -92,12 +93,12 @@ export async function BlogPost({ postData }: BlogPostProps) {
             }}
           >
             {post.author.avatar && (
-              <img
+              <Image
                 src={post.author.avatar}
                 alt={post.author.name}
+                width={32}
+                height={32}
                 style={{
-                  width: "32px",
-                  height: "32px",
                   borderRadius: "50%",
                 }}
               />
@@ -134,22 +135,24 @@ export async function BlogPost({ postData }: BlogPostProps) {
         </div>
       </header>
 
-      <img
-        src={post.coverImage}
-        alt={post.title}
-        className="blog-post-cover"
-        style={{
-          width: "100%",
-          height: "400px",
-          objectFit: "cover",
-          borderRadius: "8px",
-          marginBottom: "2rem",
-        }}
-      />
+      {post.coverImage && (
+        <img
+          src={post.coverImage}
+          alt={post.title}
+          className="blog-post-cover"
+          style={{
+            width: "100%",
+            height: "400px",
+            objectFit: "cover",
+            borderRadius: "8px",
+          }}
+        />
+      )}
 
       <div
         className="blog-post-content"
         style={{
+          marginTop: "2rem",
           lineHeight: "1.7",
           color: "#333",
         }}

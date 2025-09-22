@@ -18,7 +18,7 @@ export interface BlogPost {
   publishedAt: string;
   updatedAt: string;
   tags: Tag[];
-  coverImage: string;
+  coverImage: string | null;
 }
 
 export interface BlogConfig {

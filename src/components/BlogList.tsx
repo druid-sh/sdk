@@ -1,14 +1,15 @@
 import React from "react";
 import Link from "next/link";
 import { BlogPost as BlogPostType, BlogListResponse } from "../types";
+import Image from "next/image";
 
 interface BlogListProps {
-  blogData: BlogListResponse;
+  data: BlogListResponse;
 }
 
-export function BlogList({ blogData }: BlogListProps) {
-  const { posts, allTags, basePath, currentTag } = blogData;
-  const { page, limit, total } = blogData.pagination;
+export function BlogList({ data }: BlogListProps) {
+  const { posts, allTags, basePath, currentTag } = data;
+  const { page, limit, total } = data.pagination;
 
   // Use allTags if provided, otherwise extract unique tags from current posts
   const tagsToDisplay =

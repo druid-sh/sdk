@@ -49,8 +49,8 @@ class DruidClient {
   ): Promise<Pick<BlogListResponse, "posts" | "pagination">> {
     const res = await this.client.api.blog[":projectId"].posts.$get({
       query: {
-        page,
-        limit,
+        page: page.toString(),
+        limit: limit.toString(),
       },
       param: { projectId: projectId },
     });
@@ -72,8 +72,8 @@ class DruidClient {
       ":tagId"
     ].posts.$get({
       query: {
-        page,
-        limit,
+        page: page.toString(),
+        limit: limit.toString(),
       },
       param: { projectId: projectId, tagId: tag },
     });
