@@ -1,7 +1,6 @@
-import React from "react";
 import Link from "next/link";
-import { BlogPost as BlogPostType, BlogListResponse } from "../types";
-import Image from "next/image";
+import React from "react";
+import { BlogListResponse } from "../types";
 
 interface BlogListProps {
   data: BlogListResponse;
