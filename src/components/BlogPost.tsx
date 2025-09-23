@@ -1,6 +1,7 @@
-import React from "react";
-import Link from "next/link";
+import parse from "html-react-parser";
 import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 import { BlogPostResponse } from "../types";
 
 interface BlogPostProps {
@@ -114,10 +115,26 @@ export async function BlogPost({ data }: BlogPostProps) {
                    prose-a:text-primary prose-a:no-underline hover:prose-a:underline
                    prose-blockquote:border-l-primary
                    prose-img:rounded-lg prose-img:border"
-        dangerouslySetInnerHTML={{
-          __html: post.content,
-        }}
-      />
+      >
+        {parse(post.content, {
+          replace: (domNode: any) => {
+            if (domNode.name === "img") {
+              const { src, alt, width, height } = domNode.attribs;
+
+              return (
+                <Image
+                  src={src}
+                  alt={alt || ""}
+                  width={width ? parseInt(width) : 800}
+                  height={height ? parseInt(height) : 600}
+                  sizes="(max-width: 768px) 100vw, 700px"
+                  className="w-full h-auto object-cover rounded-lg border"
+                />
+              );
+            }
+          },
+        })}
+      </div>
     </article>
   );
 }
