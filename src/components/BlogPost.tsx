@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { BlogPostResponse } from "../types";
-import { codeToHtml } from "shiki";
 
 interface BlogPostProps {
   data: BlogPostResponse;
@@ -118,7 +117,7 @@ export async function BlogPost({ data }: BlogPostProps) {
                    prose-img:rounded-lg prose-img:border"
       >
         {parse(post.content, {
-          replace: async (domNode: any) => {
+          replace: (domNode: any) => {
             if (domNode.name === "img") {
               const { src, alt, width, height } = domNode.attribs;
 
@@ -131,27 +130,6 @@ export async function BlogPost({ data }: BlogPostProps) {
                   sizes="(max-width: 768px) 100vw, 700px"
                   className="w-full h-auto object-cover rounded-lg border"
                 />
-              );
-            } else if (domNode.name === "pre") {
-              const { children } = domNode.children[0];
-              const code = children[0].children[0];
-
-              const lang = domNode.attribs.class
-                ? domNode.attribs.class.split(" ")[1]
-                : "text";
-
-              const html = await codeToHtml(code, {
-                lang,
-                theme: "github-dark",
-              });
-
-              return (
-                <pre className="overflow-x-auto">
-                  <code
-                    className="p-4 bg-muted rounded-lg text-sm text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: html }}
-                  />
-                </pre>
               );
             }
           },
