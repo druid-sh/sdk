@@ -3,6 +3,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { BlogPostResponse } from "../types";
 
+// 1. Import the CSS module file
+import styles from "./BlogPost.module.css";
+
 interface BlogPostProps {
   data: BlogPostResponse;
 }
@@ -11,12 +14,7 @@ export async function BlogPost({ data }: BlogPostProps) {
   const { post, basePath } = data;
 
   if (!post) {
-    // You could render a dedicated "Not Found" component here
-    return (
-      <div className="flex h-screen items-center justify-center">
-        Post not found
-      </div>
-    );
+    return <div>Post not found</div>;
   }
 
   const formattedDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
@@ -26,94 +24,59 @@ export async function BlogPost({ data }: BlogPostProps) {
   });
 
   return (
-    // Main container for the blog post
-    <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-      {/* "Back to Blog" link, styled subtly like shadcn meta text */}
-      <div className="mb-8">
-        <Link
-          href={basePath}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {/* Using an icon from lucide-react is a common shadcn pattern */}
-          <span>← Back to Blog</span>
-        </Link>
-      </div>
+    // 2. Remove <style> blocks and apply classes from the imported `styles` object
+    <article className={styles.blogPost}>
+      <Link href={basePath} className={styles.backLink}>
+        ← Back to Blog
+      </Link>
 
-      {/* Post header section */}
-      <header className="mb-8 border-b pb-8">
-        {/* Post title with responsive font sizes */}
-        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl text-foreground">
-          {post.title}
-        </h1>
-
-        {/* Post metadata: author and date */}
-        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
+      <header className={styles.blogPostHeader}>
+        <h1 className={styles.blogPostTitle}>{post.title}</h1>
+        <div className={styles.blogPostMeta}>
+          <div className={styles.blogPostAuthor}>
             {post.author.avatar && (
               <Image
                 src={post.author.avatar}
                 alt={post.author.name}
-                width={28}
-                height={28}
-                // Converted inline style to Tailwind class
-                className="rounded-full"
+                width={32}
+                height={32}
+                style={{ borderRadius: "50%" }}
               />
             )}
-            <span className="font-medium text-foreground">
-              {post.author.name}
-            </span>
+            <span>{post.author.name}</span>
           </div>
-          <span>•</span>
           <time dateTime={post.publishedAt}>{formattedDate}</time>
         </div>
-
-        {/* Post tags, styled to look like shadcn Badges */}
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className={styles.blogPostTags}>
           {post.tags.map((tag) => (
-            <Link
-              key={tag.slug}
-              href={`${basePath}/tag/${tag.slug}`}
-              className="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground transition-colors hover:bg-secondary/80"
-            >
+            <Link key={tag.slug} href={`${basePath}/tag/${tag.slug}`}>
               #{tag.name}
             </Link>
           ))}
         </div>
       </header>
 
-      {/* Cover image, if it exists */}
       {post.coverImage && (
-        <div className="my-8">
+        <div className={styles.blogPostCover}>
           <Image
             src={post.coverImage}
             alt={post.title}
             width={1200}
             height={600}
             sizes="(max-width: 800px) 100vw, 800px"
-            // Converted inline styles to Tailwind classes
-            className="w-full h-auto object-cover rounded-lg border"
-            priority // Preload the LCP image
+            style={{
+              width: "100%",
+              height: "auto",
+              objectFit: "cover",
+              borderRadius: "8px",
+            }}
+            priority
           />
         </div>
       )}
 
-      {/* 
-        This is where the markdown content is rendered.
-        The `prose` classes from @tailwindcss/typography handle all the styling
-        for h1, p, pre, code, blockquote, etc. generated from markdown.
-        - `prose`: Base typography styles.
-        - `prose-lg`: Larger font size for better readability.
-        - `dark:prose-invert`: Adapts colors for dark mode.
-        - `max-w-none`: Removes the max-width constraint from the prose class itself,
-          allowing the parent container (`max-w-3xl`) to control the width.
-        - `prose-headings:*`, `prose-a:*`, etc. are modifiers to customize specific elements.
-      */}
       <div
-        className="prose prose-lg dark:prose-invert max-w-none 
-                   prose-headings:font-bold prose-headings:tracking-tight 
-                   prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-                   prose-blockquote:border-l-primary
-                   prose-img:rounded-lg prose-img:border"
+        className={styles.blogPostContent}
         dangerouslySetInnerHTML={{
           __html: post.content,
         }}
