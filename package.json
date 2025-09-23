@@ -1,6 +1,6 @@
 {
   "name": "@druid-sh/sdk",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "Druid.sh SDK for rendering blog content with SSR support",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,7 +25,8 @@
   },
   "dependencies": {
     "hono": "^4.9.6",
-    "html-react-parser": "^5.2.6"
+    "html-react-parser": "^5.2.6",
+    "shiki": "^3.13.0"
   },
   "author": {
     "name": "Druid",
