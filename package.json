@@ -20,16 +20,14 @@
   },
   "peerDependencies": {
     "next": "^15.5.0",
-    "react": "^19.1.1"
+    "react": "^19.1.1",
+    "tailwindcss": "^3.3.2"
   },
   "dependencies": {
-    "hono": "^4.9.6",
-    "remark": "^15.0.1",
-    "remark-gfm": "^4.0.1",
-    "remark-html": "^16.0.1"
+    "hono": "^4.9.6"
   },
   "author": {
-    "name": "Petvi",
+    "name": "Druid",
     "email": "dev@druid.sh"
   },
   "keywords": [
