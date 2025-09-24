@@ -69,7 +69,7 @@ export function BlogList({ data }: BlogListProps) {
         posts.map((post) => (
           <article
             key={post.id}
-            className="group grid grid-cols-1 md:grid-cols-[250px_1fr] lg:grid-cols-[300px_1fr] gap-6 p-6 border border-border rounded-lg transition-shadow hover:shadow-lg hover:shadow-foreground/5" // Converted .blog-list-item and added group for image hover
+            className="group grid grid-cols-1 md:grid-cols-[250px_1fr] lg:grid-cols-[300px_1fr] gap-6 p-6 border border-border rounded-lg" // Converted .blog-list-item and added group for image hover
           >
             {post.coverImage && (
               <div className="overflow-hidden rounded-md">
@@ -84,7 +84,7 @@ export function BlogList({ data }: BlogListProps) {
                     width={600} // Base width for 2:1 ratio
                     height={300} // Base height for 2:1 ratio
                     sizes="(max-width: 768px) 100vw, 300px"
-                    className="w-full h-auto object-cover rounded-md transition-transform duration-300 ease-in-out group-hover:scale-105" // Converted inline styles and added group-hover for scale
+                    className="w-full h-auto object-cover rounded-md transition-transform duration-300 ease-in-out" // Converted inline styles and added group-hover for scale
                   />
                 </Link>
               </div>

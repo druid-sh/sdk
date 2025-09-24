@@ -154,6 +154,27 @@ export async function BlogPost({ data }: BlogPostProps) {
                   </a>
                 );
               }
+            } else if (domNode.name === "pre") {
+              // Check if this pre contains a code block with syntax highlighting
+              const hasCodeBlock = domNode.children?.some(
+                (child: any) =>
+                  child.type === "tag" &&
+                  child.name === "code" &&
+                  child.attribs?.class?.includes("language-")
+              );
+
+              if (hasCodeBlock) {
+                const existingClass = domNode.attribs?.class || "";
+                const newClass = existingClass.includes("hljs")
+                  ? existingClass
+                  : `${existingClass} hljs`.trim();
+
+                return (
+                  <pre {...domNode.attribs} className={newClass}>
+                    {domToReact(domNode.children)}
+                  </pre>
+                );
+              }
             }
 
             // For all other elements, let html-react-parser handle them normally
