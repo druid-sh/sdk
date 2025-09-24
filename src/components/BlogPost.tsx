@@ -144,27 +144,31 @@ export async function BlogPost({ data }: BlogPostProps) {
                 domNode.attribs || {};
 
               if (!href) {
-                // Return regular anchor if no href
-                return <a {...otherAttribs}>{domNode.children}</a>;
+                // Let html-react-parser handle this normally
+                return;
               }
 
-              // Check if it's an internal link
+              // Process children recursively using html-react-parser
+              const children = domNode.children
+                ? parse(domNode.children)
+                : null;
+
               if (isInternalLink(href)) {
                 return (
-                  <Link href={href} {...otherAttribs}>
-                    {domNode.children}
+                  <Link key={href} href={href} {...otherAttribs}>
+                    {children}
                   </Link>
                 );
               } else {
-                // External link - use regular anchor with security attributes
                 return (
                   <a
+                    key={href}
                     href={href}
                     target={target || "_blank"}
                     rel={rel || "noopener noreferrer"}
                     {...otherAttribs}
                   >
-                    {domNode.children}
+                    {children}
                   </a>
                 );
               }
