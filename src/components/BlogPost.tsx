@@ -182,7 +182,7 @@ export async function BlogPost({ data }: BlogPostProps) {
               const existingClass = domNode.attribs?.class || "";
               const newClass = existingClass.includes("hljs")
                 ? existingClass
-                : `${existingClass} hljs`.trim();
+                : `${existingClass} hljs border`.trim();
 
               return (
                 <div className="relative group rounded-md border">
