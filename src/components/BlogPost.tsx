@@ -1,4 +1,4 @@
-import parse from "html-react-parser";
+import parse, { domToReact } from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -20,7 +20,6 @@ export async function BlogPost({ data }: BlogPostProps) {
   const { post, basePath } = data;
 
   if (!post) {
-    // You could render a dedicated "Not Found" component here
     return (
       <div className="flex h-screen items-center justify-center">
         Post not found
@@ -35,27 +34,21 @@ export async function BlogPost({ data }: BlogPostProps) {
   });
 
   return (
-    // Main container for the blog post
     <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-      {/* "Back to Blog" link, styled subtly like shadcn meta text */}
       <div className="mb-8">
         <Link
           href={basePath}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          {/* Using an icon from lucide-react is a common shadcn pattern */}
           <span>← Back to Blog</span>
         </Link>
       </div>
 
-      {/* Post header section */}
       <header className="mb-8 border-b pb-8">
-        {/* Post title with responsive font sizes */}
         <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl text-foreground">
           {post.title}
         </h1>
 
-        {/* Post metadata: author and date */}
         <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             {post.author.avatar && (
@@ -64,7 +57,6 @@ export async function BlogPost({ data }: BlogPostProps) {
                 alt={post.author.name}
                 width={28}
                 height={28}
-                // Converted inline style to Tailwind class
                 className="rounded-full"
               />
             )}
@@ -76,7 +68,6 @@ export async function BlogPost({ data }: BlogPostProps) {
           <time dateTime={post.publishedAt}>{formattedDate}</time>
         </div>
 
-        {/* Post tags, styled to look like shadcn Badges */}
         <div className="mt-6 flex flex-wrap gap-2">
           {post.tags.map((tag) => (
             <Link
@@ -90,7 +81,6 @@ export async function BlogPost({ data }: BlogPostProps) {
         </div>
       </header>
 
-      {/* Cover image, if it exists */}
       {post.coverImage && (
         <div className="my-8">
           <Image
@@ -99,24 +89,12 @@ export async function BlogPost({ data }: BlogPostProps) {
             width={1200}
             height={600}
             sizes="(max-width: 800px) 100vw, 800px"
-            // Converted inline styles to Tailwind classes
             className="w-full h-auto object-cover rounded-lg border"
-            priority // Preload the LCP image
+            priority
           />
         </div>
       )}
 
-      {/* 
-        This is where the markdown content is rendered.
-        The `prose` classes from @tailwindcss/typography handle all the styling
-        for h1, p, pre, code, blockquote, etc. generated from markdown.
-        - `prose`: Base typography styles.
-        - `prose-lg`: Larger font size for better readability.
-        - `dark:prose-invert`: Adapts colors for dark mode.
-        - `max-w-none`: Removes the max-width constraint from the prose class itself,
-          allowing the parent container (`max-w-3xl`) to control the width.
-        - `prose-headings:*`, `prose-a:*`, etc. are modifiers to customize specific elements.
-      */}
       <div
         className="prose prose-lg dark:prose-invert max-w-none 
                    prose-headings:font-bold prose-headings:tracking-tight 
@@ -126,11 +104,16 @@ export async function BlogPost({ data }: BlogPostProps) {
       >
         {parse(post.content, {
           replace: (domNode: any) => {
-            if (domNode.name === "img") {
-              const { src, alt, width, height } = domNode.attribs;
+            // Only process element nodes, not text nodes or other types
+            if (domNode.type !== "tag") {
+              return;
+            }
 
+            if (domNode.name === "img") {
+              const { src, alt, width, height } = domNode.attribs || {};
               return (
                 <Image
+                  key={src}
                   src={src}
                   alt={alt || ""}
                   width={width ? parseInt(width) : 800}
@@ -144,13 +127,12 @@ export async function BlogPost({ data }: BlogPostProps) {
                 domNode.attribs || {};
 
               if (!href) {
-                // Let html-react-parser handle this normally
                 return;
               }
 
-              // Process children recursively using html-react-parser
+              // Use domToReact to properly convert children
               const children = domNode.children
-                ? parse(domNode.children)
+                ? domToReact(domNode.children)
                 : null;
 
               if (isInternalLink(href)) {
@@ -173,6 +155,9 @@ export async function BlogPost({ data }: BlogPostProps) {
                 );
               }
             }
+
+            // For all other elements, let html-react-parser handle them normally
+            return;
           },
         })}
       </div>
