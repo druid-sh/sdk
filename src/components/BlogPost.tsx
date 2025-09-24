@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { BlogPostResponse } from "../types";
+import CopyButton from "./CopyButton";
 
 interface BlogPostProps {
   data: BlogPostResponse;
@@ -155,7 +156,6 @@ export async function BlogPost({ data }: BlogPostProps) {
                 );
               }
             } else if (domNode.name === "pre") {
-              // Check if this pre contains a code block with syntax highlighting
               const hasCodeBlock = domNode.children?.some(
                 (child: any) =>
                   child.type === "tag" &&
@@ -164,15 +164,37 @@ export async function BlogPost({ data }: BlogPostProps) {
               );
 
               if (hasCodeBlock) {
+                // Extract the text content from the code block
+                const codeElement = domNode.children?.find(
+                  (child: any) => child.type === "tag" && child.name === "code"
+                );
+
+                const getTextContent = (node: any): string => {
+                  if (node.type === "text") {
+                    return node.data || "";
+                  }
+                  if (node.children) {
+                    return node.children.map(getTextContent).join("");
+                  }
+                  return "";
+                };
+
+                const codeText = codeElement ? getTextContent(codeElement) : "";
+
                 const existingClass = domNode.attribs?.class || "";
                 const newClass = existingClass.includes("hljs")
                   ? existingClass
                   : `${existingClass} hljs`.trim();
 
                 return (
-                  <pre {...domNode.attribs} className={newClass}>
-                    {domToReact(domNode.children)}
-                  </pre>
+                  <div className="relative group">
+                    <pre {...domNode.attribs} className={newClass}>
+                      {domToReact(domNode.children)}
+                    </pre>
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <CopyButton text={codeText} />
+                    </div>
+                  </div>
                 );
               }
             }
