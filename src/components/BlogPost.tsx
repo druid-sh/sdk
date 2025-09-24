@@ -8,6 +8,14 @@ interface BlogPostProps {
   data: BlogPostResponse;
 }
 
+const isInternalLink = (href: string): boolean => {
+  return (
+    href.startsWith("/") ||
+    href.startsWith("#") ||
+    (!href.startsWith("http://") && !href.startsWith("https://"))
+  );
+};
+
 export async function BlogPost({ data }: BlogPostProps) {
   const { post, basePath } = data;
 
@@ -131,6 +139,35 @@ export async function BlogPost({ data }: BlogPostProps) {
                   className="w-full h-auto object-cover rounded-lg border"
                 />
               );
+            } else if (domNode.name === "a") {
+              const { href, target, rel, ...otherAttribs } =
+                domNode.attribs || {};
+
+              if (!href) {
+                // Return regular anchor if no href
+                return <a {...otherAttribs}>{domNode.children}</a>;
+              }
+
+              // Check if it's an internal link
+              if (isInternalLink(href)) {
+                return (
+                  <Link href={href} {...otherAttribs}>
+                    {domNode.children}
+                  </Link>
+                );
+              } else {
+                // External link - use regular anchor with security attributes
+                return (
+                  <a
+                    href={href}
+                    target={target || "_blank"}
+                    rel={rel || "noopener noreferrer"}
+                    {...otherAttribs}
+                  >
+                    {domNode.children}
+                  </a>
+                );
+              }
             }
           },
         })}
