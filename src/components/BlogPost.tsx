@@ -112,16 +112,31 @@ export async function BlogPost({ data }: BlogPostProps) {
 
             if (domNode.name === "img") {
               const { src, alt, width, height } = domNode.attribs || {};
+              if (!src) return null;
+
+              // Use original dimensions for aspect ratio, with sane defaults
+              const imageWidth = width ? parseInt(width, 10) : 800;
+              const imageHeight = height ? parseInt(height, 10) : 600;
+
               return (
-                <Image
-                  key={src}
-                  src={src}
-                  alt={alt || ""}
-                  width={width ? parseInt(width) : 800}
-                  height={height ? parseInt(height) : 600}
-                  sizes="(max-width: 768px) 100vw, 700px"
-                  className="w-full h-auto object-cover rounded-lg border"
-                />
+                // 1. Wrap the Image in a div. This div will control the max-height.
+                // We move the border and rounded corners to this wrapper.
+                <div
+                  className="relative w-full my-6 overflow-hidden rounded-lg border"
+                  style={{ maxHeight: "600px" }}
+                >
+                  <Image
+                    key={src}
+                    src={src}
+                    alt={alt || ""}
+                    width={imageWidth} // Use original width for aspect ratio
+                    height={imageHeight} // Use original height for aspect ratio
+                    sizes="(max-width: 768px) 100vw, 700px"
+                    // 2. Use object-contain to ensure the whole image is visible
+                    // within the container without being cropped.
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
               );
             } else if (domNode.name === "a") {
               const { href, target, rel, ...otherAttribs } =
@@ -131,7 +146,6 @@ export async function BlogPost({ data }: BlogPostProps) {
                 return;
               }
 
-              // Use domToReact to properly convert children
               const children = domNode.children
                 ? domToReact(domNode.children)
                 : null;
@@ -163,40 +177,39 @@ export async function BlogPost({ data }: BlogPostProps) {
                   child.attribs?.class?.includes("language-")
               );
 
-              if (hasCodeBlock) {
-                // Extract the text content from the code block
-                const codeElement = domNode.children?.find(
-                  (child: any) => child.type === "tag" && child.name === "code"
-                );
+              // if (hasCodeBlock) {
+              const codeElement = domNode.children?.find(
+                (child: any) => child.type === "tag" && child.name === "code"
+              );
 
-                const getTextContent = (node: any): string => {
-                  if (node.type === "text") {
-                    return node.data || "";
-                  }
-                  if (node.children) {
-                    return node.children.map(getTextContent).join("");
-                  }
-                  return "";
-                };
+              const getTextContent = (node: any): string => {
+                if (node.type === "text") {
+                  return node.data || "";
+                }
+                if (node.children) {
+                  return node.children.map(getTextContent).join("");
+                }
+                return "";
+              };
 
-                const codeText = codeElement ? getTextContent(codeElement) : "";
+              const codeText = codeElement ? getTextContent(codeElement) : "";
 
-                const existingClass = domNode.attribs?.class || "";
-                const newClass = existingClass.includes("hljs")
-                  ? existingClass
-                  : `${existingClass} hljs`.trim();
+              const existingClass = domNode.attribs?.class || "";
+              const newClass = existingClass.includes("hljs")
+                ? existingClass
+                : `${existingClass} hljs`.trim();
 
-                return (
-                  <div className="relative group">
-                    <pre {...domNode.attribs} className={newClass}>
-                      {domToReact(domNode.children)}
-                    </pre>
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <CopyButton text={codeText} />
-                    </div>
+              return (
+                <div className="relative group">
+                  <pre {...domNode.attribs} className={newClass}>
+                    {domToReact(domNode.children)}
+                  </pre>
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <CopyButton text={codeText} />
                   </div>
-                );
-              }
+                </div>
+              );
+              // }
             }
 
             // For all other elements, let html-react-parser handle them normally
