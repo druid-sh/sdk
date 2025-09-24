@@ -155,12 +155,12 @@ export async function BlogPost({ data }: BlogPostProps) {
                 );
               }
             } else if (domNode.name === "pre") {
-              const hasCodeBlock = domNode.children?.some(
-                (child: any) =>
-                  child.type === "tag" &&
-                  child.name === "code" &&
-                  child.attribs?.class?.includes("language-")
-              );
+              // const hasCodeBlock = domNode.children?.some(
+              //   (child: any) =>
+              //     child.type === "tag" &&
+              //     child.name === "code" &&
+              //     child.attribs?.class?.includes("language-")
+              // );
 
               // if (hasCodeBlock) {
               const codeElement = domNode.children?.find(
@@ -185,7 +185,7 @@ export async function BlogPost({ data }: BlogPostProps) {
                 : `${existingClass} hljs border`.trim();
 
               return (
-                <div className="relative group rounded-md border">
+                <div className="relative group">
                   <pre {...domNode.attribs} className={newClass}>
                     {domToReact(domNode.children)}
                   </pre>
