@@ -156,39 +156,41 @@ export function BlogList({ data }: BlogListProps) {
         ))
       )}
       {/* Pagination */}
-      <div className="flex justify-center items-center gap-8 mt-8 p-4 flex-wrap sm:flex-nowrap flex-col sm:flex-row">
-        {" "}
-        {/* Converted .blog-pagination and made responsive */}
-        {page > 1 && (
-          <Link
-            href={
-              currentTag
-                ? `${basePath}/tag/${currentTag}?page=${page - 1}`
-                : `${basePath}?page=${page - 1}`
-            }
-            className="px-6 py-3 bg-background border-2 border-border rounded-lg text-foreground font-medium transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground no-underline text-center" // Converted .blog-pagination-link
-          >
-            ← Previous
-          </Link>
-        )}
-        <div className="px-4 py-3 bg-muted rounded-lg text-muted-foreground font-medium">
+      {total > 0 && (
+        <div className="flex justify-center items-center gap-8 mt-8 p-4 flex-wrap sm:flex-nowrap flex-col sm:flex-row">
           {" "}
-          {/* Converted .blog-pagination-info */}
-          Page {page} of {total}
+          {/* Converted .blog-pagination and made responsive */}
+          {page > 1 && (
+            <Link
+              href={
+                currentTag
+                  ? `${basePath}/tag/${currentTag}?page=${page - 1}`
+                  : `${basePath}?page=${page - 1}`
+              }
+              className="px-6 py-3 bg-background border-2 border-border rounded-lg text-foreground font-medium transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground no-underline text-center" // Converted .blog-pagination-link
+            >
+              ← Previous
+            </Link>
+          )}
+          <div className="px-4 py-3 bg-muted rounded-lg text-muted-foreground font-medium">
+            {" "}
+            {/* Converted .blog-pagination-info */}
+            Page {page} of {total}
+          </div>
+          {page < total && (
+            <Link
+              href={
+                currentTag
+                  ? `${basePath}/tag/${currentTag}?page=${page + 1}`
+                  : `${basePath}?page=${page + 1}`
+              }
+              className="px-6 py-3 bg-background border-2 border-border rounded-lg text-foreground font-medium transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground no-underline text-center" // Converted .blog-pagination-link
+            >
+              Next →
+            </Link>
+          )}
         </div>
-        {page < total && (
-          <Link
-            href={
-              currentTag
-                ? `${basePath}/tag/${currentTag}?page=${page + 1}`
-                : `${basePath}?page=${page + 1}`
-            }
-            className="px-6 py-3 bg-background border-2 border-border rounded-lg text-foreground font-medium transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground no-underline text-center" // Converted .blog-pagination-link
-          >
-            Next →
-          </Link>
-        )}
-      </div>
+      )}
     </div>
   );
 }
