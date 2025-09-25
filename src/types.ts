@@ -45,4 +45,4 @@ export interface BlogPostResponse {
   basePath: string;
 }
 
-export type Slug = BlogPost["slug"];
+export type Slug = Pick<BlogPost, "slug">;

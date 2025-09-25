@@ -190,7 +190,7 @@ class DruidClient {
     return tags;
   }
 
-  async getSlugs(): Promise<BlogPost["slug"][]> {
+  async getSlugs(): Promise<Slug[]> {
     const slugs = await this.fetchSlugs(this.config.projectId);
     return slugs;
   }
