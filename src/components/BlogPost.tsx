@@ -35,7 +35,7 @@ export async function BlogPost({ data }: BlogPostProps) {
   });
 
   return (
-    <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <article className="max-w-3xl mx-auto">
       <div className="mb-8">
         <Link
           href={basePath}

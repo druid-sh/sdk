@@ -10,17 +10,8 @@ export function BlogList({ data }: BlogListProps) {
   const { posts, allTags, basePath, currentTag } = data;
   const { page, total } = data.pagination; // 'limit' is not used directly in JSX, so remove
 
-  // Use allTags if provided, otherwise extract unique tags from current posts
-  const tagsToDisplay =
-    allTags ||
-    Array.from(
-      new Map(
-        posts.flatMap((post) => post.tags).map((tag) => [tag.slug, tag])
-      ).values()
-    );
-
   return (
-    <div className="grid gap-8 max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="grid gap-8 max-w-6xl mx-auto">
       {" "}
       {/* Converted .blog-list */}
       {/* Tags Section */}
@@ -40,7 +31,7 @@ export function BlogList({ data }: BlogListProps) {
         >
           All
         </Link>
-        {tagsToDisplay.map((tag) => {
+        {allTags.map((tag) => {
           const isActive = currentTag === tag.slug;
           return (
             <Link
