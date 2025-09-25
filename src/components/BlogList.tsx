@@ -1,187 +1,209 @@
+import parse, { domToReact } from "html-react-parser";
+import Image from "next/image";
 import Link from "next/link";
-import Image from "next/image"; // Import the Next.js Image component
 import React from "react";
-import { BlogListResponse } from "../types";
-interface BlogListProps {
-  data: BlogListResponse;
+import { BlogPostResponse } from "../types";
+import CopyButton from "./CopyButton";
+
+interface BlogPostProps {
+  data: BlogPostResponse;
 }
 
-export function BlogList({ data }: BlogListProps) {
-  const { posts, allTags, basePath, currentTag } = data;
-  const { page, total } = data.pagination; // 'limit' is not used directly in JSX, so remove
+const isInternalLink = (href: string): boolean => {
+  return (
+    href.startsWith("/") ||
+    href.startsWith("#") ||
+    (!href.startsWith("http://") && !href.startsWith("https://"))
+  );
+};
+
+export async function BlogPost({ data }: BlogPostProps) {
+  const { post, basePath } = data;
+
+  if (!post) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Post not found
+      </div>
+    );
+  }
+
+  const formattedDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
-    <div className="grid gap-8 max-w-6xl mx-auto">
-      {" "}
-      {/* Converted .blog-list */}
-      {/* Tags Section */}
-      <div className="flex flex-wrap gap-2 mb-8 p-4 bg-muted rounded-lg items-center">
-        {" "}
-        {/* Converted .blog-tags */}
-        <span className="font-bold mr-4 text-foreground">Tags</span>{" "}
-        {/* Converted .blog-tags > span */}
+    <div>
+      <div className="max-w-6xl mx-auto mb-8">
         <Link
-          href={`${basePath}`}
-          className={`px-2 py-1 rounded-md text-sm transition-colors
-            ${
-              !currentTag
-                ? "bg-primary text-primary-foreground font-semibold"
-                : "bg-muted-foreground/10 text-muted-foreground hover:bg-muted-foreground/20"
-            }`} // Converted .tag-link & .tag-link.active
+          href={basePath}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          All
+          <span>← Back to Blog</span>
         </Link>
-        {allTags.map((tag) => {
-          const isActive = currentTag === tag.slug;
-          return (
-            <Link
-              key={tag.slug}
-              href={`${basePath}/tag/${tag.slug}`}
-              className={`px-2 py-1 rounded-md text-sm transition-colors
-                ${
-                  isActive
-                    ? "bg-primary text-primary-foreground font-semibold"
-                    : "bg-muted-foreground/10 text-muted-foreground hover:bg-muted-foreground/20"
-                }`} // Converted .tag-link & .tag-link.active
-            >
-              #{tag.name}
-            </Link>
-          );
-        })}
       </div>
-      {/* Posts List */}
-      {posts.length === 0 ? (
-        <div className="text-center py-12 px-8 text-lg text-muted-foreground bg-muted rounded-lg">
-          {" "}
-          {/* Converted .no-posts-found */}
-          No posts found.
-        </div>
-      ) : (
-        posts.map((post) => (
-          <article
-            key={post.id}
-            className="group grid grid-cols-1 md:grid-cols-[250px_1fr] lg:grid-cols-[300px_1fr] gap-6 p-6 border border-border rounded-lg" // Converted .blog-list-item and added group for image hover
-          >
-            {post.coverImage && (
-              <div className="overflow-hidden rounded-md">
-                {" "}
-                {/* Converted .blog-list-image-wrapper */}
-                <Link href={`${basePath}/${post.slug}`} className="block">
-                  {" "}
-                  {/* Added block to Link for full area hover */}
-                  <Image
-                    src={post.coverImage}
-                    alt={post.title}
-                    width={600} // Base width for 2:1 ratio
-                    height={300} // Base height for 2:1 ratio
-                    sizes="(max-width: 768px) 100vw, 300px"
-                    className="w-full h-auto object-cover rounded-md transition-transform duration-300 ease-in-out" // Converted inline styles and added group-hover for scale
-                  />
-                </Link>
-              </div>
-            )}
 
-            <div className="flex flex-col">
-              {" "}
-              {/* Converted .blog-list-content */}
-              <h2 className="text-2xl font-bold mb-2 leading-tight">
-                {" "}
-                {/* Converted .blog-list-title, increased size slightly */}
-                <Link
-                  href={`${basePath}/${post.slug}`}
-                  className="text-foreground no-underline transition-colors hover:text-primary"
-                >
-                  {post.title}
-                </Link>
-              </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4 flex-grow">
-                {" "}
-                {/* Converted .blog-list-excerpt */}
-                {post.excerpt}
-              </p>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-2 text-sm text-muted-foreground">
-                {" "}
-                {/* Converted .blog-list-meta */}
-                <div className="flex items-center gap-2">
-                  {" "}
-                  {/* Converted .blog-list-author */}
-                  {post.author.avatar && (
-                    <Image
-                      src={post.author.avatar}
-                      alt={post.author.name}
-                      width={24}
-                      height={24}
-                      className="rounded-full object-cover" // Converted inline style
-                    />
-                  )}
-                  <span className="font-medium text-foreground">
-                    {post.author.name}
-                  </span>{" "}
-                  {/* Added font-medium text-foreground for consistency */}
-                </div>
-                <span>•</span>
-                <span className="text-sm text-muted-foreground">
-                  {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                    // More explicit date formatting
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-4">
-                {" "}
-                {/* Converted .blog-list-post-tags and added mt-4 for separation */}
-                {post.tags.slice(0, 3).map((tag) => (
-                  <Link
-                    key={tag.slug}
-                    href={`${basePath}/tag/${tag.slug}`}
-                    className="inline-block bg-secondary px-2 py-1 rounded-md text-xs font-semibold text-secondary-foreground no-underline transition-colors hover:bg-secondary/80" // Converted styles
-                  >
-                    #{tag.name}
-                  </Link>
-                ))}
-              </div>
+      <article className="max-w-3xl mx-auto">
+        <header className="mb-8 border-b pb-8">
+          <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl text-foreground">
+            {post.title}
+          </h1>
+
+          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              {post.author.avatar && (
+                <Image
+                  src={post.author.avatar}
+                  alt={post.author.name}
+                  width={28}
+                  height={28}
+                  className="rounded-full"
+                />
+              )}
+              <span className="font-medium text-foreground">
+                {post.author.name}
+              </span>
             </div>
-          </article>
-        ))
-      )}
-      {/* Pagination */}
-      {total > 0 && (
-        <div className="flex justify-center items-center gap-8 mt-8 p-4 flex-wrap sm:flex-nowrap flex-col sm:flex-row">
-          {" "}
-          {/* Converted .blog-pagination and made responsive */}
-          {page > 1 && (
-            <Link
-              href={
-                currentTag
-                  ? `${basePath}/tag/${currentTag}?page=${page - 1}`
-                  : `${basePath}?page=${page - 1}`
-              }
-              className="px-6 py-3 bg-background border-2 border-border rounded-lg text-foreground font-medium transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground no-underline text-center" // Converted .blog-pagination-link
-            >
-              ← Previous
-            </Link>
-          )}
-          <div className="px-4 py-3 bg-muted rounded-lg text-muted-foreground font-medium">
-            {" "}
-            {/* Converted .blog-pagination-info */}
-            Page {page} of {total}
+            <span>•</span>
+            <time dateTime={post.publishedAt}>{formattedDate}</time>
           </div>
-          {page < total && (
-            <Link
-              href={
-                currentTag
-                  ? `${basePath}/tag/${currentTag}?page=${page + 1}`
-                  : `${basePath}?page=${page + 1}`
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {post.tags.map((tag) => (
+              <Link
+                key={tag.slug}
+                href={`${basePath}/tag/${tag.slug}`}
+                className="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground transition-colors hover:bg-secondary/80"
+              >
+                #{tag.name}
+              </Link>
+            ))}
+          </div>
+        </header>
+
+        {post.coverImage && (
+          <div className="my-8">
+            <Image
+              src={post.coverImage}
+              alt={post.title}
+              width={1200}
+              height={600}
+              sizes="(max-width: 800px) 100vw, 800px"
+              className="w-full h-auto object-cover rounded-lg border"
+              priority
+            />
+          </div>
+        )}
+
+        <div
+          className="prose prose-lg dark:prose-invert max-w-none 
+                     prose-headings:font-bold prose-headings:tracking-tight 
+                     prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+                     prose-blockquote:border-l-primary
+                     prose-img:rounded-lg prose-img:border"
+        >
+          {parse(post.content, {
+            replace: (domNode: any) => {
+              // Only process element nodes, not text nodes or other types
+              if (domNode.type !== "tag") {
+                return;
               }
-              className="px-6 py-3 bg-background border-2 border-border rounded-lg text-foreground font-medium transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground no-underline text-center" // Converted .blog-pagination-link
-            >
-              Next →
-            </Link>
-          )}
+
+              if (domNode.name === "img") {
+                const { src, alt, width, height } = domNode.attribs || {};
+                return (
+                  <Image
+                    key={src}
+                    src={src}
+                    alt={alt || ""}
+                    width={width ? parseInt(width) : 800}
+                    height={height ? parseInt(height) : 600}
+                    sizes="(max-width: 768px) 100vw, 700px"
+                    className="w-full h-auto object-cover rounded-lg border"
+                  />
+                );
+              } else if (domNode.name === "a") {
+                const { href, target, rel, ...otherAttribs } =
+                  domNode.attribs || {};
+
+                if (!href) {
+                  return;
+                }
+
+                const children = domNode.children
+                  ? domToReact(domNode.children)
+                  : null;
+
+                if (isInternalLink(href)) {
+                  return (
+                    <Link key={href} href={href} {...otherAttribs}>
+                      {children}
+                    </Link>
+                  );
+                } else {
+                  return (
+                    <a
+                      key={href}
+                      href={href}
+                      target={target || "_blank"}
+                      rel={rel || "noopener noreferrer"}
+                      {...otherAttribs}
+                    >
+                      {children}
+                    </a>
+                  );
+                }
+              } else if (domNode.name === "pre") {
+                // const hasCodeBlock = domNode.children?.some(
+                //   (child: any) =>
+                //     child.type === "tag" &&
+                //     child.name === "code" &&
+                //     child.attribs?.class?.includes("language-")
+                // );
+
+                // if (hasCodeBlock) {
+                const codeElement = domNode.children?.find(
+                  (child: any) => child.type === "tag" && child.name === "code"
+                );
+
+                const getTextContent = (node: any): string => {
+                  if (node.type === "text") {
+                    return node.data || "";
+                  }
+                  if (node.children) {
+                    return node.children.map(getTextContent).join("");
+                  }
+                  return "";
+                };
+
+                const codeText = codeElement ? getTextContent(codeElement) : "";
+
+                const existingClass = domNode.attribs?.class || "";
+                const newClass = existingClass.includes("hljs")
+                  ? existingClass
+                  : `${existingClass} hljs border`.trim();
+
+                return (
+                  <div className="relative group">
+                    <pre {...domNode.attribs} className={newClass}>
+                      {domToReact(domNode.children)}
+                    </pre>
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <CopyButton text={codeText} />
+                    </div>
+                  </div>
+                );
+                // }
+              }
+
+              // For all other elements, let html-react-parser handle them normally
+              return;
+            },
+          })}
         </div>
-      )}
+      </article>
     </div>
   );
 }
