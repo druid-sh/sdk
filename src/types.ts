@@ -44,3 +44,5 @@ export interface BlogPostResponse {
   post: BlogPost | null;
   basePath: string;
 }
+
+export type Slug = BlogPost["slug"];

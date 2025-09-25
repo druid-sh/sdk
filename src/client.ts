@@ -5,6 +5,7 @@ import {
   BlogPost,
   BlogPostResponse,
   Tag,
+  Slug,
 } from "./types";
 
 // START OF MAGIC
@@ -99,6 +100,20 @@ class DruidClient {
     return data;
   }
 
+  private async fetchSlugs(projectId: string): Promise<Slug[]> {
+    const res = await this.client.api.blog[":projectId"].slugs.$get({
+      param: { projectId: projectId },
+    });
+
+    const data = await res.json();
+
+    if ("error" in data) {
+      throw new Error(data.error as string);
+    }
+
+    return data.slugs;
+  }
+
   async fetchPost(projectId: string, slug: string): Promise<BlogPost> {
     const res = await this.client.api.blog[":projectId"].posts[":postId"].$get({
       param: { projectId: projectId, postId: slug },
@@ -119,7 +134,7 @@ class DruidClient {
       page,
       limit
     );
-    // const posts = allPosts.slice(startIndex, startIndex + limit);
+
     const allTags = await this.getTags();
 
     return {
@@ -173,6 +188,11 @@ class DruidClient {
   async getTags(): Promise<Tag[]> {
     const tags = await this.fetchTags(this.config.projectId);
     return tags;
+  }
+
+  async getSlugs(): Promise<BlogPost["slug"][]> {
+    const slugs = await this.fetchSlugs(this.config.projectId);
+    return slugs;
   }
 
   async getTag(tag: string): Promise<Tag> {
