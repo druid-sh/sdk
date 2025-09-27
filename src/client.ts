@@ -114,7 +114,7 @@ class DruidClient {
     return data.slugs;
   }
 
-  async fetchPost(projectId: string, slug: string): Promise<BlogPost> {
+  private async fetchPost(projectId: string, slug: string): Promise<BlogPost> {
     const res = await this.client.api.blog[":projectId"].posts[":postId"].$get({
       param: { projectId: projectId, postId: slug },
     });
