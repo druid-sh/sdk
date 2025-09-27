@@ -152,8 +152,8 @@ export function BlogList({ data }: BlogListProps) {
             <Link
               href={
                 currentTag
-                  ? `${basePath}/tag/${currentTag}?page=${page - 1}`
-                  : `${basePath}?page=${page - 1}`
+                  ? `${basePath}/tag/${currentTag}/page/${page - 1}`
+                  : `${basePath}/page/${page - 1}`
               }
               className="px-6 py-3 bg-background border-2 border-border rounded-lg text-foreground font-medium transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground no-underline text-center" // Converted .blog-pagination-link
             >
@@ -169,8 +169,8 @@ export function BlogList({ data }: BlogListProps) {
             <Link
               href={
                 currentTag
-                  ? `${basePath}/tag/${currentTag}?page=${page + 1}`
-                  : `${basePath}?page=${page + 1}`
+                  ? `${basePath}/tag/${currentTag}/page/${page + 1}`
+                  : `${basePath}/page/${page + 1}`
               }
               className="px-6 py-3 bg-background border-2 border-border rounded-lg text-foreground font-medium transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground no-underline text-center" // Converted .blog-pagination-link
             >
