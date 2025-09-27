@@ -62,7 +62,7 @@ export function BlogListLoading() {
       ))}
 
       {/* Pagination skeleton */}
-      <div className="flex justify-center items-center gap-8 mt-8 p-4">
+      <div className="flex justify-center items-center gap-8 mt-8 p-4 flex-wrap sm:flex-nowrap flex-col sm:flex-row">
         <div className="h-12 w-24 bg-muted rounded-lg"></div>
         <div className="h-12 w-20 bg-muted rounded-lg"></div>
         <div className="h-12 w-20 bg-muted rounded-lg"></div>
