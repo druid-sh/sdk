@@ -50,3 +50,8 @@ export interface BlogPostResponse {
 }
 
 export type Slug = Pick<BlogPost, "slug">;
+
+export type PagedTag = {
+  tag: string;
+  page: string;
+};
