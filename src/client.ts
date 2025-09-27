@@ -6,7 +6,8 @@ import {
   BlogPostResponse,
   Tag,
   Slug,
-  PagedTag,
+  Pages,
+  TagPages,
 } from "./types";
 
 // START OF MAGIC
@@ -203,7 +204,7 @@ class DruidClient {
     return tagData;
   }
 
-  async getPagedTags(): Promise<PagedTag[]> {
+  async getTagPages(): Promise<TagPages[]> {
     const tags = await this.getTags();
 
     const allParams = await Promise.all(
@@ -221,6 +222,17 @@ class DruidClient {
     );
 
     return allParams.flat();
+  }
+
+  async getPages(): Promise<Pages[]> {
+    const posts = await this.getPosts();
+
+    return Array.from(
+      { length: posts.pagination.totalPages },
+      (_, i) => i + 1
+    ).map((page) => ({
+      page: String(page),
+    }));
   }
 }
 
