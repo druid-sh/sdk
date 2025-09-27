@@ -128,11 +128,11 @@ class DruidClient {
     return data;
   }
 
-  async getPosts(page = 1, limit = 10): Promise<BlogListResponse> {
+  async getPosts(page = 1): Promise<BlogListResponse> {
     const { posts, pagination } = await this.fetchPosts(
       this.config.projectId,
       page,
-      limit
+      this.config.paginationLimit
     );
 
     const allTags = await this.getTags();
@@ -162,16 +162,12 @@ class DruidClient {
     };
   }
 
-  async getPostsByTag(
-    tag: string,
-    page = 1,
-    limit = 10
-  ): Promise<BlogListResponse> {
+  async getPostsByTag(tag: string, page = 1): Promise<BlogListResponse> {
     const { posts, pagination } = await this.fetchPostsByTag(
       this.config.projectId,
       tag,
       page,
-      limit
+      this.config.paginationLimit
     );
     const allTags = await this.getTags();
 

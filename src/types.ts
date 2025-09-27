@@ -26,6 +26,7 @@ export interface BlogConfig {
   basePath: string;
   siteName: string;
   projectId: string;
+  paginationLimit: number;
 }
 
 export interface BlogListResponse {
