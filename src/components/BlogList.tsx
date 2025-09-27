@@ -7,7 +7,7 @@ interface BlogListProps {
 }
 export function BlogList({ data }: BlogListProps) {
   const { posts, allTags, basePath, currentTag } = data;
-  const { page, total } = data.pagination; // 'limit' is not used directly in JSX, so remove
+  const { page, totalPages, total } = data.pagination; // 'limit' is not used directly in JSX, so remove
   return (
     <div className="grid gap-8 max-w-6xl mx-auto">
       {" "}
@@ -144,7 +144,7 @@ export function BlogList({ data }: BlogListProps) {
         ))
       )}
       {/* Pagination */}
-      {total > 0 && (
+      {page <= totalPages && (
         <div className="flex justify-center items-center gap-8 mt-8 p-4 flex-wrap sm:flex-nowrap flex-col sm:flex-row">
           {" "}
           {/* Converted .blog-pagination and made responsive */}
@@ -163,9 +163,9 @@ export function BlogList({ data }: BlogListProps) {
           <div className="px-4 py-3 bg-muted rounded-lg text-muted-foreground font-medium">
             {" "}
             {/* Converted .blog-pagination-info */}
-            Page {page} of {total}
+            Page {page} of {totalPages}
           </div>
-          {page < total && (
+          {page < totalPages && (
             <Link
               href={
                 currentTag
