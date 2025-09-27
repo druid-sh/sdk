@@ -5,11 +5,9 @@ import { BlogListResponse } from "../types";
 interface BlogListProps {
   data: BlogListResponse;
 }
-
 export function BlogList({ data }: BlogListProps) {
   const { posts, allTags, basePath, currentTag } = data;
   const { page, total } = data.pagination; // 'limit' is not used directly in JSX, so remove
-
   return (
     <div className="grid gap-8 max-w-6xl mx-auto">
       {" "}
@@ -72,15 +70,14 @@ export function BlogList({ data }: BlogListProps) {
                   <Image
                     src={post.coverImage}
                     alt={post.title}
-                    width={600} // Base width for 2:1 ratio
-                    height={300} // Base height for 2:1 ratio
+                    width={1200} // SEO optimized width for social sharing
+                    height={630} // SEO optimized height for social sharing (1.91:1 ratio)
                     sizes="(max-width: 768px) 100vw, 300px"
                     className="w-full h-auto object-cover rounded-md transition-transform duration-300 ease-in-out" // Converted inline styles and added group-hover for scale
                   />
                 </Link>
               </div>
             )}
-
             <div className="flex flex-col">
               {" "}
               {/* Converted .blog-list-content */}

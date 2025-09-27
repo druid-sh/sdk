@@ -44,13 +44,11 @@ export async function BlogPost({ data }: BlogPostProps) {
           <span>← Back to Blog</span>
         </Link>
       </div>
-
       <article className="max-w-3xl mx-auto">
         <header className="mb-8 border-b pb-8">
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl text-foreground">
             {post.title}
           </h1>
-
           <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               {post.author.avatar && (
@@ -69,7 +67,6 @@ export async function BlogPost({ data }: BlogPostProps) {
             <span>•</span>
             <time dateTime={post.publishedAt}>{formattedDate}</time>
           </div>
-
           <div className="mt-6 flex flex-wrap gap-2">
             {post.tags.map((tag) => (
               <Link
@@ -82,21 +79,19 @@ export async function BlogPost({ data }: BlogPostProps) {
             ))}
           </div>
         </header>
-
         {post.coverImage && (
           <div className="my-8">
             <Image
               src={post.coverImage}
               alt={post.title}
-              width={1200}
-              height={600}
+              width={1200} // SEO optimized width for social sharing
+              height={630} // SEO optimized height for social sharing (1.91:1 ratio)
               sizes="(max-width: 800px) 100vw, 800px"
               className="w-full h-auto object-cover rounded-lg border"
               priority
             />
           </div>
         )}
-
         <div
           className="prose prose-lg dark:prose-invert max-w-none 
                      prose-headings:font-bold prose-headings:tracking-tight 
@@ -110,7 +105,6 @@ export async function BlogPost({ data }: BlogPostProps) {
               if (domNode.type !== "tag") {
                 return;
               }
-
               if (domNode.name === "img") {
                 const { src, alt, width, height } = domNode.attribs || {};
                 return (
@@ -118,8 +112,8 @@ export async function BlogPost({ data }: BlogPostProps) {
                     key={src}
                     src={src}
                     alt={alt || ""}
-                    width={width ? parseInt(width) : 800}
-                    height={height ? parseInt(height) : 600}
+                    width={width ? parseInt(width) : 1200} // SEO optimized default width
+                    height={height ? parseInt(height) : 630} // SEO optimized default height
                     sizes="(max-width: 768px) 100vw, 700px"
                     className="w-full h-auto object-cover rounded-lg border"
                   />
@@ -127,15 +121,12 @@ export async function BlogPost({ data }: BlogPostProps) {
               } else if (domNode.name === "a") {
                 const { href, target, rel, ...otherAttribs } =
                   domNode.attribs || {};
-
                 if (!href) {
                   return;
                 }
-
                 const children = domNode.children
                   ? domToReact(domNode.children)
                   : null;
-
                 if (isInternalLink(href)) {
                   return (
                     <Link key={href} href={href} {...otherAttribs}>
@@ -156,18 +147,9 @@ export async function BlogPost({ data }: BlogPostProps) {
                   );
                 }
               } else if (domNode.name === "pre") {
-                // const hasCodeBlock = domNode.children?.some(
-                //   (child: any) =>
-                //     child.type === "tag" &&
-                //     child.name === "code" &&
-                //     child.attribs?.class?.includes("language-")
-                // );
-
-                // if (hasCodeBlock) {
                 const codeElement = domNode.children?.find(
                   (child: any) => child.type === "tag" && child.name === "code"
                 );
-
                 const getTextContent = (node: any): string => {
                   if (node.type === "text") {
                     return node.data || "";
@@ -177,14 +159,11 @@ export async function BlogPost({ data }: BlogPostProps) {
                   }
                   return "";
                 };
-
                 const codeText = codeElement ? getTextContent(codeElement) : "";
-
                 const existingClass = domNode.attribs?.class || "";
                 const newClass = existingClass.includes("hljs")
                   ? existingClass
                   : `${existingClass} hljs border`.trim();
-
                 return (
                   <div className="relative group">
                     <pre {...domNode.attribs} className={newClass}>
@@ -195,9 +174,7 @@ export async function BlogPost({ data }: BlogPostProps) {
                     </div>
                   </div>
                 );
-                // }
               }
-
               // For all other elements, let html-react-parser handle them normally
               return;
             },
