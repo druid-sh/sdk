@@ -18,6 +18,8 @@ type Client = ReturnType<typeof hc<BlogAppType>>;
 
 const API_URL = "https://api.druid.sh";
 
+const DEFAULT_PAGINATION_LIMIT = 10;
+
 /**
  * DruidClient - A TypeScript client for interacting with the Druid Blog API
  *
@@ -25,25 +27,10 @@ const API_URL = "https://api.druid.sh";
  * for a blog system. It handles authentication via API key and provides a
  * clean interface for common blog operations.
  *
- * @example
- * ```typescript
- * const client = new DruidClient({
- *   apiKey: 'your-api-key',
- *   projectId: 'your-project-id',
- *   siteName: 'My Blog',
- *   basePath: '/blog',
- *   paginationLimit: 10
- * });
- *
- * // Get paginated posts
- * const posts = await client.getPosts(1);
- *
- * // Get a specific post
- * const post = await client.getPost('my-blog-post-slug');
- * ```
  */
 class DruidClient {
-  private client: Client;
+  private readonly client: Client;
+  private readonly config: Required<BlogConfig>;
 
   /** The site name from the configuration */
   siteName: string;
@@ -51,15 +38,13 @@ class DruidClient {
   /**
    * Creates a new DruidClient instance
    *
-   * @param config - Configuration object for the blog client
-   * @param config.apiKey - API key for authentication
-   * @param config.projectId - Project identifier
-   * @param config.siteName - Name of the blog site
-   * @param config.basePath - Base path for blog routes
-   * @param config.paginationLimit - Number of posts per page
    */
-  constructor(private readonly config: BlogConfig) {
-    this.config = config;
+  constructor(config: BlogConfig) {
+    const defaults = {
+      paginationLimit: DEFAULT_PAGINATION_LIMIT,
+      revalidationSeconds: 60,
+    } as const satisfies Partial<BlogConfig>;
+    this.config = { ...defaults, ...config };
     this.siteName = config.siteName;
     this.client = hc<BlogAppType>(API_URL, {
       headers: {
@@ -214,14 +199,6 @@ class DruidClient {
    * @returns Promise resolving to blog list response with posts, pagination, and tags
    * @throws {Error} When posts cannot be fetched
    *
-   * @example
-   * ```typescript
-   * // Get first page of posts
-   * const firstPage = await client.getPosts();
-   *
-   * // Get second page
-   * const secondPage = await client.getPosts(2);
-   * ```
    */
   async getPosts(page = 1): Promise<BlogListResponse> {
     const { posts, pagination } = await this.fetchPosts(
@@ -253,11 +230,6 @@ class DruidClient {
    * @returns Promise resolving to blog post response with post data and base path
    * @throws {Error} When the post cannot be found or fetched
    *
-   * @example
-   * ```typescript
-   * const post = await client.getPost('my-awesome-blog-post');
-   * console.log(post.post.title);
-   * ```
    */
   async getPost(slug: string): Promise<BlogPostResponse> {
     const post = await this.fetchPost(this.config.projectId, slug);
@@ -275,14 +247,6 @@ class DruidClient {
    * @returns Promise resolving to filtered blog list response
    * @throws {Error} When posts cannot be fetched or tag doesn't exist
    *
-   * @example
-   * ```typescript
-   * // Get posts tagged with 'javascript'
-   * const jsPosts = await client.getPostsByTag('javascript');
-   *
-   * // Get second page of JavaScript posts
-   * const jsPostsPage2 = await client.getPostsByTag('javascript', 2);
-   * ```
    */
   async getPostsByTag(tag: string, page = 1): Promise<BlogListResponse> {
     const { posts, pagination } = await this.fetchPostsByTag(
@@ -314,11 +278,6 @@ class DruidClient {
    * @returns Promise resolving to array of all tags
    * @throws {Error} When tags cannot be fetched
    *
-   * @example
-   * ```typescript
-   * const tags = await client.getTags();
-   * tags.forEach(tag => console.log(tag.name, tag.slug));
-   * ```
    */
   async getTags(): Promise<Tag[]> {
     const tags = await this.fetchTags(this.config.projectId);
@@ -333,12 +292,6 @@ class DruidClient {
    * @returns Promise resolving to array of all post slugs
    * @throws {Error} When slugs cannot be fetched
    *
-   * @example
-   * ```typescript
-   * const slugs = await client.getSlugs();
-   * // Use slugs to generate static routes
-   * const routes = slugs.map(slug => `/blog/${slug.slug}`);
-   * ```
    */
   async getSlugs(): Promise<Slug[]> {
     const slugs = await this.fetchSlugs(this.config.projectId);
@@ -352,11 +305,6 @@ class DruidClient {
    * @returns Promise resolving to tag data including metadata
    * @throws {Error} When the tag cannot be found or fetched
    *
-   * @example
-   * ```typescript
-   * const tagInfo = await client.getTag('javascript');
-   * console.log(tagInfo.name, tagInfo.description);
-   * ```
    */
   async getTag(tag: string): Promise<Tag> {
     const tagData = await this.fetchTag(tag);
@@ -372,16 +320,6 @@ class DruidClient {
    * @returns Promise resolving to array of tag/page parameter combinations
    * @throws {Error} When tag or pagination data cannot be fetched
    *
-   * @example
-   * ```typescript
-   * const tagPages = await client.getTagPages();
-   * // Returns: [
-   * //   { tag: 'javascript', page: '1' },
-   * //   { tag: 'javascript', page: '2' },
-   * //   { tag: 'react', page: '1' },
-   * //   ...
-   * // ]
-   * ```
    */
   async getTagPages(): Promise<TagPages[]> {
     const tags = await this.getTags();
@@ -409,16 +347,6 @@ class DruidClient {
    * @returns Promise resolving to array of page parameter objects
    * @throws {Error} When pagination data cannot be fetched
    *
-   * @example
-   * ```typescript
-   * const pages = await client.getPages();
-   * // Returns: [
-   * //   { page: '1' },
-   * //   { page: '2' },
-   * //   { page: '3' },
-   * //   ...
-   * // ]
-   * ```
    */
   async getPages(): Promise<Pages[]> {
     const posts = await this.getPosts();

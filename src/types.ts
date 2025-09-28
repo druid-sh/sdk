@@ -28,30 +28,6 @@ export interface BlogPost {
  * to initialize and use the DruidClient for blog operations. It handles
  * authentication, routing, and pagination settings.
  *
- * @example
- * ```typescript
- * const config: BlogConfig = {
- *   apiKey: 'your-secret-api-key-here',
- *   basePath: '/blog',
- *   siteName: 'My Awesome Tech Blog',
- *   projectId: 'proj_abc123xyz',
- *   paginationLimit: 10
- * };
- *
- * const client = new DruidClient(config);
- * ```
- *
- * @example
- * ```typescript
- * // Environment-based configuration
- * const config: BlogConfig = {
- *   apiKey: process.env.DRUID_API_KEY!,
- *   basePath: process.env.BLOG_BASE_PATH || '/articles',
- *   siteName: process.env.SITE_NAME || 'Default Blog',
- *   projectId: process.env.DRUID_PROJECT_ID!,
- *   paginationLimit: parseInt(process.env.PAGINATION_LIMIT || '12')
- * };
- * ```
  */
 export interface BlogConfig {
   /**
@@ -98,8 +74,8 @@ export interface BlogConfig {
    * This ID connects your client to the specific blog project in the Druid
    * system. Each project has its own posts, tags, and configuration.
    *
-   * @example "proj_abc123xyz789"
-   * @example "project_my_blog_2023"
+   * @example "clhj8k2m40000l608w5c8r9n2"
+   * @example "clhm9x4p10001m308z7f5q8w1"
    * @see https://druid.sh/dashboard to find your project ID
    */
   projectId: string;
@@ -118,7 +94,24 @@ export interface BlogConfig {
    * @example 10 - Standard blog pagination
    * @example 20 - For content-heavy blogs
    */
-  paginationLimit: number;
+  paginationLimit?: number;
+
+  /**
+   * Maximum number of seconds to cache blog data before revalidation
+   *
+   * This controls how often the blog content is refreshed from the API.
+   * Lower values mean more up-to-date content but increased API usage.
+   * Higher values reduce API calls but may show stale content longer.
+   *
+   * @minimum 1
+   * @maximum 86400
+   * @default 60
+   * @example 60 - Revalidate every minute
+   * @example 300 - Revalidate every 5 minutes
+   * @example 3600 - Revalidate every hour
+   * @example 86400 - Revalidate daily
+   */
+  revalidationSeconds?: number;
 }
 
 export interface BlogListResponse {
