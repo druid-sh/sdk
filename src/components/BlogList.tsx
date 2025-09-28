@@ -64,7 +64,7 @@ export function BlogList({ data }: BlogListProps) {
               <div className="overflow-hidden rounded-md">
                 {" "}
                 {/* Converted .blog-list-image-wrapper */}
-                <Link href={`${basePath}/${post.slug}`} className="block">
+                <Link href={`${basePath}/post/${post.slug}`} className="block">
                   {" "}
                   {/* Added block to Link for full area hover */}
                   <Image
@@ -85,7 +85,7 @@ export function BlogList({ data }: BlogListProps) {
                 {" "}
                 {/* Converted .blog-list-title, increased size slightly */}
                 <Link
-                  href={`${basePath}/${post.slug}`}
+                  href={`${basePath}/post/${post.slug}`}
                   className="text-foreground no-underline transition-colors hover:text-primary"
                 >
                   {post.title}
