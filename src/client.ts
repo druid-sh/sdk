@@ -70,7 +70,7 @@ class DruidClient {
     });
     const tagData = await res.json();
     if ("error" in tagData) {
-      throw new Error(`Error fetching tag: ${tagData.error}`);
+      throw new Error(tagData.error);
     }
     return tagData;
   }
@@ -179,11 +179,14 @@ class DruidClient {
    * @returns Promise resolving to the blog post data
    * @throws {Error} When the post cannot be fetched or doesn't exist
    */
-  private async fetchPost(slug: string): Promise<BlogPost> {
+  private async fetchPost(slug: string): Promise<BlogPost | null> {
     const res = await this.client.api.blog.posts[":postId"].$get({
       param: { postId: slug },
     });
     const data = await res.json();
+    if (res.status === 404) {
+      return null;
+    }
     if ("error" in data) {
       throw new Error(data.error as string);
     }
