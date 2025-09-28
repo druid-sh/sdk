@@ -35,6 +35,9 @@ class DruidClient {
   /** The site name from the configuration */
   siteName: string;
 
+  /** Revalidation interval in seconds */
+  revalidationInterval: number;
+
   /**
    * Creates a new DruidClient instance
    *
@@ -45,7 +48,8 @@ class DruidClient {
       revalidationSeconds: 60,
     } as const satisfies Partial<BlogConfig>;
     this.config = { ...defaults, ...config };
-    this.siteName = config.siteName;
+    this.siteName = this.config.siteName;
+    this.revalidationInterval = this.config.revalidationSeconds;
     this.client = hc<BlogAppType>(API_URL, {
       headers: {
         "x-api-key": this.config.apiKey,
