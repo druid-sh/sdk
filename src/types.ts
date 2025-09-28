@@ -111,7 +111,7 @@ export interface BlogConfig {
    * @example 3600 - Revalidate every hour
    * @example 86400 - Revalidate daily
    */
-  revalidationSeconds?: number;
+  revalidate?: number;
 }
 
 export interface BlogListResponse {
