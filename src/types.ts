@@ -95,23 +95,6 @@ export interface BlogConfig {
    * @example 20 - For content-heavy blogs
    */
   paginationLimit?: number;
-
-  /**
-   * Maximum number of seconds to cache blog data before revalidation
-   *
-   * This controls how often the blog content is refreshed from the API.
-   * Lower values mean more up-to-date content but increased API usage.
-   * Higher values reduce API calls but may show stale content longer.
-   *
-   * @minimum 1
-   * @maximum 86400
-   * @default 60
-   * @example 60 - Revalidate every minute
-   * @example 300 - Revalidate every 5 minutes
-   * @example 3600 - Revalidate every hour
-   * @example 86400 - Revalidate daily
-   */
-  revalidate?: number;
 }
 
 export interface BlogListResponse {

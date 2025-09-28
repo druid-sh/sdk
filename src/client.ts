@@ -35,9 +35,6 @@ class DruidClient {
   /** The site name from the configuration */
   siteName: string;
 
-  /** Revalidation interval in seconds */
-  revalidate: number;
-
   /**
    * Creates a new DruidClient instance
    *
@@ -45,11 +42,9 @@ class DruidClient {
   constructor(config: BlogConfig) {
     const defaults = {
       paginationLimit: DEFAULT_PAGINATION_LIMIT,
-      revalidate: 60,
     } as const satisfies Partial<BlogConfig>;
     this.config = { ...defaults, ...config };
     this.siteName = this.config.siteName;
-    this.revalidate = this.config.revalidate;
     this.client = hc<BlogAppType>(API_URL, {
       headers: {
         "x-api-key": this.config.apiKey,
