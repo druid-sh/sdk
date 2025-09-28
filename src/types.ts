@@ -69,18 +69,6 @@ export interface BlogConfig {
   siteName: string;
 
   /**
-   * Unique project identifier from your Druid dashboard
-   *
-   * This ID connects your client to the specific blog project in the Druid
-   * system. Each project has its own posts, tags, and configuration.
-   *
-   * @example "clhj8k2m40000l608w5c8r9n2"
-   * @example "clhm9x4p10001m308z7f5q8w1"
-   * @see https://druid.sh/dashboard to find your project ID
-   */
-  projectId: string;
-
-  /**
    * Number of blog posts to display per page
    *
    * This controls pagination behavior across all blog list views. Higher

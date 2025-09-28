@@ -61,8 +61,8 @@ class DruidClient {
    * @throws {Error} When the tag cannot be fetched or doesn't exist
    */
   private async fetchTag(tag: string): Promise<Tag> {
-    const res = await this.client.api.blog[":projectId"].tags[":tagId"].$get({
-      param: { projectId: this.config.projectId, tagId: tag },
+    const res = await this.client.api.blog.tags[":tagId"].$get({
+      param: { tagId: tag },
     });
     const tagData = await res.json();
     if ("error" in tagData) {
@@ -82,21 +82,19 @@ class DruidClient {
    * @throws {Error} When posts cannot be fetched
    */
   private async fetchPosts(
-    projectId: string,
     page: number,
     limit: number
   ): Promise<Pick<BlogListResponse, "posts" | "pagination">> {
-    const res = await this.client.api.blog[":projectId"].posts.$get({
+    const res = await this.client.api.blog.posts.$get({
       query: {
         page: page.toString(),
         limit: limit.toString(),
       },
-      param: { projectId: projectId },
     });
     const data = await res.json();
-    if ("error" in data) {
-      throw new Error(data.error);
-    }
+    // if ("error" in data) {
+    //   throw new Error(data.error);
+    // }
     return data;
   }
 
@@ -112,19 +110,16 @@ class DruidClient {
    * @throws {Error} When posts cannot be fetched
    */
   private async fetchPostsByTag(
-    projectId: string,
     tag: string,
     page: number,
     limit: number
   ): Promise<Pick<BlogListResponse, "posts" | "pagination">> {
-    const res = await this.client.api.blog[":projectId"].tags[
-      ":tagId"
-    ].posts.$get({
+    const res = await this.client.api.blog.tags[":tagId"].posts.$get({
       query: {
         page: page.toString(),
         limit: limit.toString(),
       },
-      param: { projectId: projectId, tagId: tag },
+      param: { tagId: tag },
     });
     const data = await res.json();
     if ("error" in data) {
@@ -141,9 +136,9 @@ class DruidClient {
    * @returns Promise resolving to array of tags
    * @throws {Error} When tags cannot be fetched
    */
-  private async fetchTags(projectId: string): Promise<Tag[]> {
-    const res = await this.client.api.blog[":projectId"].tags.$get({
-      param: { projectId: projectId },
+  private async fetchTags(): Promise<Tag[]> {
+    const res = await this.client.api.blog.tags.$get({
+      param: {},
     });
     const data = await res.json();
     if ("error" in data) {
@@ -160,9 +155,9 @@ class DruidClient {
    * @returns Promise resolving to array of slugs
    * @throws {Error} When slugs cannot be fetched
    */
-  private async fetchSlugs(projectId: string): Promise<Slug[]> {
-    const res = await this.client.api.blog[":projectId"].slugs.$get({
-      param: { projectId: projectId },
+  private async fetchSlugs(): Promise<Slug[]> {
+    const res = await this.client.api.blog.slugs.$get({
+      param: {},
     });
     const data = await res.json();
     if ("error" in data) {
@@ -180,9 +175,9 @@ class DruidClient {
    * @returns Promise resolving to the blog post data
    * @throws {Error} When the post cannot be fetched or doesn't exist
    */
-  private async fetchPost(projectId: string, slug: string): Promise<BlogPost> {
-    const res = await this.client.api.blog[":projectId"].posts[":postId"].$get({
-      param: { projectId: projectId, postId: slug },
+  private async fetchPost(slug: string): Promise<BlogPost> {
+    const res = await this.client.api.blog.posts[":postId"].$get({
+      param: { postId: slug },
     });
     const data = await res.json();
     if ("error" in data) {
@@ -201,7 +196,6 @@ class DruidClient {
    */
   async getPosts(page = 1): Promise<BlogListResponse> {
     const { posts, pagination } = await this.fetchPosts(
-      this.config.projectId,
       page,
       this.config.paginationLimit
     );
@@ -231,7 +225,7 @@ class DruidClient {
    *
    */
   async getPost(slug: string): Promise<BlogPostResponse> {
-    const post = await this.fetchPost(this.config.projectId, slug);
+    const post = await this.fetchPost(slug);
     return {
       post,
       basePath: this.config.basePath,
@@ -249,7 +243,6 @@ class DruidClient {
    */
   async getPostsByTag(tag: string, page = 1): Promise<BlogListResponse> {
     const { posts, pagination } = await this.fetchPostsByTag(
-      this.config.projectId,
       tag,
       page,
       this.config.paginationLimit
@@ -279,7 +272,7 @@ class DruidClient {
    *
    */
   async getTags(): Promise<Tag[]> {
-    const tags = await this.fetchTags(this.config.projectId);
+    const tags = await this.fetchTags();
     return tags;
   }
 
@@ -293,7 +286,7 @@ class DruidClient {
    *
    */
   async getSlugs(): Promise<Slug[]> {
-    const slugs = await this.fetchSlugs(this.config.projectId);
+    const slugs = await this.fetchSlugs();
     return slugs;
   }
 
