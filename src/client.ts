@@ -19,6 +19,8 @@ type Client = ReturnType<typeof hc<BlogAppType>>;
 const API_URL = "https://api.druid.sh";
 
 const DEFAULT_PAGINATION_LIMIT = 10;
+const DEFAULT_BASE_PATH = "/blog";
+const DEFAULT_SITE_NAME = "Druid";
 
 /**
  * DruidClient - A TypeScript client for interacting with the Druid Blog API
@@ -42,6 +44,8 @@ class DruidClient {
   constructor(config: BlogConfig) {
     const defaults = {
       paginationLimit: DEFAULT_PAGINATION_LIMIT,
+      basePath: DEFAULT_BASE_PATH,
+      siteName: DEFAULT_SITE_NAME,
     } as const satisfies Partial<BlogConfig>;
     this.config = { ...defaults, ...config };
     this.siteName = this.config.siteName;

@@ -49,12 +49,13 @@ export interface BlogConfig {
    * with a forward slash and represent where your blog is mounted in your
    * application's routing structure.
    *
+   * @default "/blog"
    * @example "/blog" - Blog accessible at yoursite.com/blog
    * @example "/articles" - Blog accessible at yoursite.com/articles
    * @example "/news" - Blog accessible at yoursite.com/news
    * @example "/" - Blog mounted at root of site
    */
-  basePath: string;
+  basePath?: string;
 
   /**
    * Display name for your blog/site
@@ -62,11 +63,12 @@ export interface BlogConfig {
    * This name is used throughout the blog interface for branding purposes.
    * It appears in page titles, navigation, and other UI elements.
    *
+   * @default "Druid"
    * @example "Tech Insights Blog"
    * @example "Company News & Updates"
    * @example "Developer Journal"
    */
-  siteName: string;
+  siteName?: string;
 
   /**
    * Number of blog posts to display per page
